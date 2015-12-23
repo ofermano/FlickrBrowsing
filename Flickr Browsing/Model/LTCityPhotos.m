@@ -10,11 +10,14 @@
 
 #import "FlickrFetcher.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LTCityPhotos()
-@property (strong,nonatomic) NSArray *photos;
-@property (strong,nonatomic) NSString *placeID;
+@property (strong, nonatomic, nullable) NSArray *photos;
+@property (strong, nonatomic, nullable) NSString *placeID;
 @end
 
+NS_ASSUME_NONNULL_END
 
 @implementation LTCityPhotos
 
@@ -29,9 +32,14 @@ static const NSUInteger kMaxNumberOfPphtos = 50;
 }
 
 - (void)loadPhotos {
+  if (!self.placeID) {
+    return;
+  }
   NSURL *photosURL = [FlickrFetcher URLforPhotosInPlace:self.placeID maxResults:kMaxNumberOfPphtos];
   NSData *photosData = [NSData dataWithContentsOfURL:photosURL];
-  NSDictionary *photosDictionary = [NSJSONSerialization JSONObjectWithData:photosData options:0 error:nil];
+  NSDictionary *photosDictionary = [NSJSONSerialization JSONObjectWithData:photosData
+                                                                   options:0
+                                                                     error:nil];
   NSArray *photos = [photosDictionary valueForKeyPath:FLICKR_RESULTS_PHOTOS];
   self.photos = photos;
 }

@@ -12,40 +12,44 @@
 #import "LTFlickrPlaces.h"
 #import "LTCityPhotosVC.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPlacesVC() <UISplitViewControllerDelegate>
-@property (strong,nonatomic) LTFlickrPlaces *places;
+@property (strong, nonatomic, nullable) LTFlickrPlaces *places;
 @property (assign) id <UISplitViewControllerDelegate> delegate;
 @end
 
+NS_ASSUME_NONNULL_END
 
 @implementation LTPlacesVC
 
-#pragma -i mark Delegate split view controller
-
+#pragma mark -
+#pragma mark Delegate split view controller
+#pragma mark -
 - (void)awakeFromNib {
   [super awakeFromNib];
   self.splitViewController.delegate = self;
 }
 
 - (BOOL)splitViewController:(UISplitViewController *)sender
-   shouldHideViewController:(UIViewController *)master
-              inOrientation:(UIInterfaceOrientation)orientation {
+  shouldHideViewController:(UIViewController *)master
+             inOrientation:(UIInterfaceOrientation)orientation {
   return NO; // never hide it
 }
 
-
-#pragma mark -i Setters and Getters
-
+#pragma mark -
+#pragma mark Setters and Getters
+#pragma mark -
 - (LTFlickrPlaces *)places {
-  if (!_places)
+  if (!_places) {
     _places = [[LTFlickrPlaces alloc] init];
+  }
   return _places;
 }
 
-
-#pragma -i Deligation of table view
-
+#pragma mark -
+#pragma mark Deligation of table view
+#pragma mark -
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)sender {
   return [self.places getNumberOfCountries];
 }
@@ -78,11 +82,13 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if (![[segue identifier] isEqualToString:@"City Segue"])
+  if (![[segue identifier] isEqualToString:@"City Segue"]) {
     return;
+  }
   UIViewController *viewController = [segue destinationViewController];
-  if (![viewController isKindOfClass:[LTCityPhotosVC class]])
+  if (![viewController isKindOfClass:[LTCityPhotosVC class]]) {
     return;
+  }
   NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
   NSString *country = [self.places getCountryByIndex:indexPath.section];
   LTCityPhotos *images = [self.places getImagesInCountry:country withIndex:indexPath.item];

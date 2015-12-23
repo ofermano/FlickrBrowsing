@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+/// The ViewController of the recent photos.
 @interface LTRecentPhotosVC : UITableViewController
 
 @end
+
+NS_ASSUME_NONNULL_END
 

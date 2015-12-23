@@ -11,14 +11,20 @@
 #import "FlickrFetcher.h"
 #import "LTPlaceData.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LTFlickrPlaces()
-@property (strong,nonatomic) NSMutableDictionary *placesByCountry;
-@property (strong,nonatomic) NSArray *sortedCountries;
+@property (strong, nonatomic, nullable) NSMutableDictionary *placesByCountry;
+@property (strong, nonatomic, nullable) NSArray *sortedCountries;
 @end
+
+NS_ASSUME_NONNULL_END
 
 @implementation LTFlickrPlaces
 
-#pragma mark - Contruction
+#pragma mark -
+#pragma mark Initializers
+#pragma mark -
 - (instancetype)init {
   if (self = [super init]) {
     [self getFlickerData];
@@ -38,11 +44,14 @@
 - (NSArray *)getFlickrPlaces {
   NSURL *topPlacesURL = [FlickrFetcher URLforTopPlaces];
   NSData *topPlacesData = [NSData dataWithContentsOfURL:topPlacesURL];
-  NSDictionary *topPlacesContainer = [NSJSONSerialization JSONObjectWithData:topPlacesData options:0 error:nil];
+  NSDictionary *topPlacesContainer = [NSJSONSerialization JSONObjectWithData:topPlacesData
+                                                                     options:0
+                                                                       error:nil];
   return [topPlacesContainer valueForKeyPath:FLICKR_RESULTS_PLACES];
 }
 
-// The Flickr data structure is a sting in the following format: "<city>, <province/state>, <country>" or "<city>, <country>"
+// The Flickr data structure is a sting in the following format:
+// "<city>, <province/state>, <country>" or "<city>, <country>"
 - (LTPlaceData *)convertToSystemPlace:(NSDictionary *)flickrPlace {
   NSArray *record = [[flickrPlace valueForKey:FLICKR_PLACE_NAME] componentsSeparatedByString:@", "];
   LTPlaceData *data = [LTPlaceData alloc];
@@ -68,18 +77,21 @@
 }
 
 - (void)sortPlaces {
-  self.sortedCountries = [[self.placesByCountry allKeys] sortedArrayUsingSelector:@selector(compare:)];
-  for (NSMutableArray *placesInCountry in self.placesByCountry.allValues)
-    [placesInCountry sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"city" ascending:YES]]];
+  self.sortedCountries = [[self.placesByCountry allKeys]
+                          sortedArrayUsingSelector:@selector(compare:)];
+  for (NSMutableArray *placesInCountry in self.placesByCountry.allValues) {
+    [placesInCountry sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"city"
+                                                                          ascending:YES]]];
+  }
 }
 
-
-
-#pragma mark -i Queries
-
+#pragma mark -
+#pragma mark Queries
+#pragma mark -
 - (NSMutableDictionary *)placesByCountry {
-  if (!_placesByCountry)
+  if (!_placesByCountry) {
     _placesByCountry = [[NSMutableDictionary alloc] init];
+  }
   return _placesByCountry;
 }
 
@@ -97,16 +109,25 @@
 }
 
 - (NSString *)getCityInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
+  if (!country) {
+    return nil;
+  }
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return place.city;
 }
 
 - (NSString *)getProvinceInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
+  if (!country) {
+    return nil;
+  }
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return place.province;
 }
 
 - (LTCityPhotos *)getImagesInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
+  if (!country) {
+    return nil;
+  }
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return [[LTCityPhotos alloc] initWithPlaceID:place.place_id];
 }

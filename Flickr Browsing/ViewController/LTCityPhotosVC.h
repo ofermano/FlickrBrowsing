@@ -10,11 +10,16 @@
 
 #import "LTCityPhotos.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// This clsss is the controller for the CityPhotos MVC.
 /// It is responsible to get the list from the model and to maintain the table view.
 @interface LTCityPhotosVC : UITableViewController
 
-@property (strong,nonatomic) LTCityPhotos *photos;
+/// The model of the CityPhotos \c LTCityPhotos.
+@property (strong, nonatomic, nullable) LTCityPhotos *photos;
 
 @end
+
+NS_ASSUME_NONNULL_END
 

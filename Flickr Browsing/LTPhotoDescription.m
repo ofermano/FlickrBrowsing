@@ -21,17 +21,25 @@
 /// The assumption is the URL does not contains a space if we will first write the URL followed
 /// by the space we could use the space a a separator regardless of the characters in the title.
 + (NSString *)serialize:(LTPhotoDescription *)description {
+  if(!description) {
+    return nil;
+  }
   return [NSString stringWithFormat:@"%@ %@", [description.url absoluteString], description.title];
 }
 
 + (LTPhotoDescription *)desirialize:(NSString *)descriptionString {
+  if(!descriptionString) {
+    return nil;
+  }
   LTPhotoDescription *description = [[LTPhotoDescription alloc]init];
   NSArray *spaceSepsrated = [descriptionString componentsSeparatedByString:@" "];
   description.url = [NSURL URLWithString:spaceSepsrated[0]];
-  if ([spaceSepsrated count] == 1)
+  if ([spaceSepsrated count] == 1) {
     description.title = @"";
+  }
   else {
-    NSArray *titleComponents = [spaceSepsrated subarrayWithRange:NSMakeRange(1,[spaceSepsrated count]-1)];
+    NSRange titleRange = NSMakeRange(1,[spaceSepsrated count]-1);
+    NSArray *titleComponents = [spaceSepsrated subarrayWithRange:titleRange];
     description.title = [titleComponents componentsJoinedByString:@" "];
   }
   return description;

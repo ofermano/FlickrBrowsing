@@ -10,20 +10,38 @@
 
 #import "LTCityPhotos.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// This class manages the Flickr places.
 /// It should be used as the model point of contact to an MVC that wants to work with Flickr places.
 @interface LTFlickrPlaces : NSObject
 
+#pragma mark -
+#pragma mark Initializer
+#pragma mark -
+/// Initializing and getting all the places from the Flickr site.
 - (instancetype)init;
 
-
+#pragma mark -
+#pragma mark Interface
+#pragma mark -
+/// Getting the number of countries.
 - (NSInteger)getNumberOfCountries;
+/// Getting the number of cities given a country index.
 - (NSInteger)getNumberOfCitiesInCountry:(NSInteger)countryIndex;
-- (NSString *)getCountryByIndex:(NSInteger)countryIndex;
-- (NSString *)getCityInCountry:(NSString *)country withIndex:(NSInteger)cityIndex;
-- (NSString *)getProvinceInCountry:(NSString *)country withIndex:(NSInteger)cityIndex;
-- (LTCityPhotos *)getImagesInCountry:(NSString *)country withIndex:(NSInteger)cityIndex;
+/// Getting the country given its index.
+- (nullable NSString *)getCountryByIndex:(NSInteger)countryIndex;
+/// Getting a city given a country and city index.
+- (nullable NSString *)getCityInCountry:(nullable NSString *)country withIndex:(NSInteger)cityIndex;
+/// Getting a province given a country and city index.
+- (nullable NSString *)getProvinceInCountry:(nullable NSString *)country
+                                  withIndex:(NSInteger)cityIndex;
+/// Getting the \c LTCityPhotos given a country and city index.
+- (nullable LTCityPhotos *)getImagesInCountry:(nullable NSString *)country
+                                    withIndex:(NSInteger)cityIndex;
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 

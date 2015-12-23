@@ -11,14 +11,17 @@
 #import "LTRecentPhotos.h"
 #import "LTPhotoVC.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotosVC()
-@property (strong,nonatomic) LTRecentPhotos *photos;
+@property (strong, nonatomic, nullable) LTRecentPhotos *photos;
 @end
 
+NS_ASSUME_NONNULL_END
 
-#pragma mark -i Initialization
-
+#pragma mark -
+#pragma mark Initialization
+#pragma mark -
 @implementation LTRecentPhotosVC
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -28,12 +31,13 @@
   [tableView reloadData];
 }
 
-
-#pragma mark -i Setters and Getters
-
+#pragma mark -
+#pragma mark Setters and Getters
+#pragma mark -
 - (LTRecentPhotos *)photos {
-  if (!_photos)
+  if (!_photos) {
     _photos = [[LTRecentPhotos alloc]init];
+  }
   return _photos;
 }
 
@@ -41,9 +45,9 @@
   return 1;
 }
 
-
-#pragma mark -i UITableView delegation
-
+#pragma mark -
+#pragma mark UITableView delegation
+#pragma mark -
 - (NSInteger)tableView:(UITableView *)sender numberOfRowsInSection:(NSInteger)section {
   return [self.photos getNumberOfPhotos];
 }
@@ -51,33 +55,39 @@
 - (UITableViewCell *)tableView:(UITableView *)sender
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell *cell;
-  cell = [self.tableView dequeueReusableCellWithIdentifier:@"Recent Photo Cell" forIndexPath:indexPath];
+  cell = [self.tableView dequeueReusableCellWithIdentifier:@"Recent Photo Cell"
+                                              forIndexPath:indexPath];
   cell.textLabel.text = [self.photos getTitleByIndex:indexPath.item];
   return cell;
 }
 
 - (void)tableView:(UITableView *)sender didSelectRowAtIndexPath:(NSIndexPath *)path
 {
-  if (self.splitViewController.collapsed)
+  if (self.splitViewController.collapsed) {
     return;
+  }
   LTPhotoVC *photoVC = self.splitViewController.viewControllers[1];
   [self callImageViewController:photoVC withIndex:path];
 }
 
-
-#pragma mark -i Segue handling
+#pragma mark -
+#pragma mark Segue handling
+#pragma mark -
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
                                   sender:(id)sender {
   return self.splitViewController.collapsed;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  if (![[segue identifier] isEqualToString:@"Image Segue"])
+  if (![[segue identifier] isEqualToString:@"Image Segue"]) {
     return;
-  if (![[segue destinationViewController] isKindOfClass:[LTPhotoVC class]])
+  }
+  if (![[segue destinationViewController] isKindOfClass:[LTPhotoVC class]]) {
     return;
-  if (![sender isKindOfClass:[UITableViewCell class]])
+  }
+  if (![sender isKindOfClass:[UITableViewCell class]]) {
     return;
+  }
   
   NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
   LTPhotoVC *photoVC = [segue destinationViewController];

@@ -10,9 +10,13 @@
 
 #import "LTPersistentPhotoHistory.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LTRecentPhotos()
-@property (strong,nonatomic) NSArray *photos;
+@property (strong, nonatomic, nullable) NSArray *photos;
 @end
+
+NS_ASSUME_NONNULL_END
 
 @implementation LTRecentPhotos
 
@@ -28,7 +32,7 @@
 }
 
 + (void)pushPhotoDescription:(LTPhotoDescription *)photoDescription {
-  [LTPersistentPhotoHistory addPhotoDescription:photoDescription];
+  [LTPersistentPhotoHistory pushPhotoDescription:photoDescription];
 }
 
 - (NSUInteger)getNumberOfPhotos {
