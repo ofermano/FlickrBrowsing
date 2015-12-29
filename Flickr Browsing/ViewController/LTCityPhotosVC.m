@@ -98,9 +98,9 @@
   if (!imageURL) {
     return;
   }
-  LTPhotoDescription *description = [[LTPhotoDescription alloc]initWith:title withURL:imageURL];
+  LTPhotoDescription *description = [[LTPhotoDescription alloc]initWithTitle:title andURL:imageURL];
   photoVC.photoDescription = description;
-  [LTRecentPhotos pushPhotoDescription:description];
+  [[LTRecentPhotos list]push:description];
 }
 
 @end

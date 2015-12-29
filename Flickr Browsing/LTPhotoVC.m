@@ -47,10 +47,7 @@ NS_ASSUME_NONNULL_END
 // The title is a propoerty of a super class thus we need to create a new instant of
 // \c PhotoDescription every access.
 - (LTPhotoDescription *)photoDescription {
-  LTPhotoDescription *description = [[LTPhotoDescription alloc] init];
-  description.url = self.imageURL;
-  description.title = self.title;
-  return description;
+  return [[LTPhotoDescription alloc] initWithTitle:self.title andURL:self.imageURL];
 }
 
 - (void)setPhotoDescription:(LTPhotoDescription *)photoDescription {

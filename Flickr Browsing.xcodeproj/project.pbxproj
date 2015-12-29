@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C58C27561C32CECA000D6A7B /* LTPersistentUniqueStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C58C27551C32CECA000D6A7B /* LTPersistentUniqueStack.m */; };
 		C5C7375F1C1EA67700E0229B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C7375E1C1EA67700E0229B /* main.m */; };
 		C5C737621C1EA67700E0229B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737611C1EA67700E0229B /* AppDelegate.m */; };
 		C5C737651C1EA67700E0229B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737641C1EA67700E0229B /* ViewController.m */; };
@@ -22,7 +23,6 @@
 		C5C737AA1C1FF42A00E0229B /* LTCityPhotosVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737A91C1FF42A00E0229B /* LTCityPhotosVC.m */; };
 		C5C737AD1C1FF81E00E0229B /* LTFlickrPlaces.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737AC1C1FF81E00E0229B /* LTFlickrPlaces.m */; };
 		C5C737B01C20078F00E0229B /* LTPhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737AF1C20078F00E0229B /* LTPhotoVC.m */; };
-		C5C737B31C205E9800E0229B /* LTPersistentPhotoHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737B21C205E9800E0229B /* LTPersistentPhotoHistory.m */; };
 		C5C737B61C205EDC00E0229B /* LTPhotoDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737B51C205EDC00E0229B /* LTPhotoDescription.m */; };
 		C5C737B91C214AE300E0229B /* LTRecentPhotosVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737B81C214AE300E0229B /* LTRecentPhotosVC.m */; };
 		C5C737BC1C214F8400E0229B /* LTRecentPhotos.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737BB1C214F8400E0229B /* LTRecentPhotos.m */; };
@@ -46,6 +46,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C58C27541C32CECA000D6A7B /* LTPersistentUniqueStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LTPersistentUniqueStack.h; sourceTree = "<group>"; };
+		C58C27551C32CECA000D6A7B /* LTPersistentUniqueStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LTPersistentUniqueStack.m; sourceTree = "<group>"; };
 		C5C7375A1C1EA67700E0229B /* Flickr Browsing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flickr Browsing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5C7375E1C1EA67700E0229B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C5C737601C1EA67700E0229B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -77,8 +79,6 @@
 		C5C737AC1C1FF81E00E0229B /* LTFlickrPlaces.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LTFlickrPlaces.m; path = Model/LTFlickrPlaces.m; sourceTree = "<group>"; };
 		C5C737AE1C20078F00E0229B /* LTPhotoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LTPhotoVC.h; sourceTree = "<group>"; };
 		C5C737AF1C20078F00E0229B /* LTPhotoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LTPhotoVC.m; sourceTree = "<group>"; };
-		C5C737B11C205E9800E0229B /* LTPersistentPhotoHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LTPersistentPhotoHistory.h; sourceTree = "<group>"; };
-		C5C737B21C205E9800E0229B /* LTPersistentPhotoHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LTPersistentPhotoHistory.m; sourceTree = "<group>"; };
 		C5C737B41C205EDC00E0229B /* LTPhotoDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LTPhotoDescription.h; sourceTree = "<group>"; };
 		C5C737B51C205EDC00E0229B /* LTPhotoDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LTPhotoDescription.m; sourceTree = "<group>"; };
 		C5C737B71C214AE300E0229B /* LTRecentPhotosVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LTRecentPhotosVC.h; sourceTree = "<group>"; };
@@ -201,8 +201,8 @@
 				C5C737A61C1EE31F00E0229B /* LTPlaceData.m */,
 				C5C737B41C205EDC00E0229B /* LTPhotoDescription.h */,
 				C5C737B51C205EDC00E0229B /* LTPhotoDescription.m */,
-				C5C737B11C205E9800E0229B /* LTPersistentPhotoHistory.h */,
-				C5C737B21C205E9800E0229B /* LTPersistentPhotoHistory.m */,
+				C58C27541C32CECA000D6A7B /* LTPersistentUniqueStack.h */,
+				C58C27551C32CECA000D6A7B /* LTPersistentUniqueStack.m */,
 				C5C737951C1EB13A00E0229B /* LTCityPhotos.h */,
 				C5C737961C1EB13A00E0229B /* LTCityPhotos.m */,
 				C5C737AB1C1FF81E00E0229B /* LTFlickrPlaces.h */,
@@ -347,13 +347,13 @@
 				C5C737651C1EA67700E0229B /* ViewController.m in Sources */,
 				C5C737621C1EA67700E0229B /* AppDelegate.m in Sources */,
 				C5C7375F1C1EA67700E0229B /* main.m in Sources */,
-				C5C737B31C205E9800E0229B /* LTPersistentPhotoHistory.m in Sources */,
 				C5C737AD1C1FF81E00E0229B /* LTFlickrPlaces.m in Sources */,
 				C5C737BC1C214F8400E0229B /* LTRecentPhotos.m in Sources */,
 				C5C737B91C214AE300E0229B /* LTRecentPhotosVC.m in Sources */,
 				C5C737AA1C1FF42A00E0229B /* LTCityPhotosVC.m in Sources */,
 				C5C737B61C205EDC00E0229B /* LTPhotoDescription.m in Sources */,
 				C5C737A71C1EE31F00E0229B /* LTPlaceData.m in Sources */,
+				C58C27561C32CECA000D6A7B /* LTPersistentUniqueStack.m in Sources */,
 				C5C7379B1C1EB29400E0229B /* FlickrFetcher.m in Sources */,
 				C5C737A41C1EC20B00E0229B /* LTPlacesVC.m in Sources */,
 				C5C737971C1EB13A00E0229B /* LTCityPhotos.m in Sources */,

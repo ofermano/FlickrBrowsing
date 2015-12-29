@@ -8,42 +8,42 @@
 
 #import "LTPhotoDescription.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation LTPhotoDescription
 
-- (instancetype) initWith:(NSString *)title withURL:(NSURL *)url {
+- (instancetype) initWithTitle:(nullable NSString *)title andURL:(nullable NSURL *)url {
   if (self = [super init]) {
-    self.title = title;
-    self.url = url;
+    _title = title;
+    _url = url;
   }
   return self;
 }
 
-/// The assumption is the URL does not contains a space if we will first write the URL followed
-/// by the space we could use the space a a separator regardless of the characters in the title.
-+ (NSString *)serialize:(LTPhotoDescription *)description {
-  if(!description) {
-    return nil;
-  }
-  return [NSString stringWithFormat:@"%@ %@", [description.url absoluteString], description.title];
+- (BOOL)isEqual:(id)object {
+  if (![object isKindOfClass:[LTPhotoDescription class]])
+    return NO;
+  LTPhotoDescription *that = (LTPhotoDescription *)object;
+  return ([self.title isEqual:that.title] && [self.url isEqual:that.url]);
 }
 
-+ (LTPhotoDescription *)desirialize:(NSString *)descriptionString {
-  if(!descriptionString) {
-    return nil;
+#pragma mark -
+#pragma mark NSCoding protocol
+#pragma mark -
+- (nullable id)initWithCoder:(NSCoder *)decoder {
+  if (self = [super init]) {
+    _title = [decoder decodeObjectForKey:@"title"];
+    _url = [decoder decodeObjectForKey:@"url"];
   }
-  LTPhotoDescription *description = [[LTPhotoDescription alloc]init];
-  NSArray *spaceSepsrated = [descriptionString componentsSeparatedByString:@" "];
-  description.url = [NSURL URLWithString:spaceSepsrated[0]];
-  if ([spaceSepsrated count] == 1) {
-    description.title = @"";
-  }
-  else {
-    NSRange titleRange = NSMakeRange(1,[spaceSepsrated count]-1);
-    NSArray *titleComponents = [spaceSepsrated subarrayWithRange:titleRange];
-    description.title = [titleComponents componentsJoinedByString:@" "];
-  }
-  return description;
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+  [encoder encodeObject:self.title forKey:@"title"];
+  [encoder encodeObject:self.url forKey:@"url"];
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
 

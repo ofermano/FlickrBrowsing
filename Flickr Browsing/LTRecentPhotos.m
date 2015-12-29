@@ -8,31 +8,44 @@
 
 #import "LTRecentPhotos.h"
 
-#import "LTPersistentPhotoHistory.h"
+#import "LTPersistentUniqueStack.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotos()
+@property (strong, nonatomic) LTPersistentUniqueStack *persistenMemory;
 @property (strong, nonatomic, nullable) NSArray *photos;
 @end
 
-NS_ASSUME_NONNULL_END
-
 @implementation LTRecentPhotos
+
+static LTRecentPhotos *recentPhotos = nil;
++ (LTRecentPhotos *)list {
+  if (!recentPhotos) {
+    recentPhotos = [[LTRecentPhotos alloc] init];
+  }
+  return recentPhotos;
+}
+
+static NSString* const kAppSuit = @"Flickr Browsing";
+static NSString* const kHistoryKey = @"history";
+static const int kHistoryLength = 20;
 
 - (instancetype)init {
   if (self = [super init]) {
-    self.photos = [LTPersistentPhotoHistory getHistory];
+    _persistenMemory = [[LTPersistentUniqueStack alloc] initAppSuit:kAppSuit andKey:kHistoryKey andSize:kHistoryLength];
+    self.photos = [self.persistenMemory stack];
   }
   return self;
 }
 
 - (void)update {
-  self.photos = [LTPersistentPhotoHistory getHistory];
+  self.photos = [self.persistenMemory stack];
 }
 
-+ (void)pushPhotoDescription:(LTPhotoDescription *)photoDescription {
-  [LTPersistentPhotoHistory pushPhotoDescription:photoDescription];
+- (void)push:(LTPhotoDescription *)photoDescription {
+  [self.persistenMemory push:photoDescription];
+  [self update];
 }
 
 - (NSUInteger)getNumberOfPhotos {
@@ -51,4 +64,7 @@ NS_ASSUME_NONNULL_END
 
 
 @end
+
+NS_ASSUME_NONNULL_END
+
 

@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)callImageViewController:(LTPhotoVC *)photoVC withIndex:(NSIndexPath *)path {
   LTPhotoDescription *description = [self.photos getDescriptionByIndex:path.item];
-  [LTRecentPhotos pushPhotoDescription:description];
+  [self.photos push:description];
   photoVC.photoDescription = description;
 }
 
