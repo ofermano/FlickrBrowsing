@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Initialization
 #pragma mark -
+
 @implementation LTRecentPhotosVC
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -32,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Setters and Getters
 #pragma mark -
+
 - (LTRecentPhotos *)photos {
   if (!_photos) {
     _photos = [[LTRecentPhotos alloc]init];
@@ -46,6 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark UITableView delegation
 #pragma mark -
+
 - (NSInteger)tableView:(UITableView *)sender numberOfRowsInSection:(NSInteger)section {
   return [self.photos getNumberOfPhotos];
 }
@@ -71,6 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Segue handling
 #pragma mark -
+
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
                                   sender:(nullable id)sender {
   return self.splitViewController.collapsed;

@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Initializers
 #pragma mark -
+
 - (instancetype)init {
   if (self = [super init]) {
     [self getFlickerData];
@@ -86,6 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Queries
 #pragma mark -
+
 - (nullable NSMutableDictionary *)placesByCountry {
   if (!_placesByCountry) {
     _placesByCountry = [[NSMutableDictionary alloc] init];

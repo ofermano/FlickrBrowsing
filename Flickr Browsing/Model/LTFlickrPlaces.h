@@ -19,12 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Initializer
 #pragma mark -
+
 /// Initializing and getting all the places from the Flickr site.
 - (instancetype)init;
 
 #pragma mark -
 #pragma mark Interface
 #pragma mark -
+
 /// Getting the number of countries.
 - (NSInteger)getNumberOfCountries;
 /// Getting the number of cities given a country index.

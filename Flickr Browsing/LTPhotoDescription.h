@@ -17,12 +17,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Initializiers
 #pragma mark -
+
 /// Initialization with the data.
-- (instancetype) initWithTitle:(nullable NSString *)title andURL:(nullable NSURL *)url;
+- (instancetype)initWithTitle:(nullable NSString *)title andURL:(nullable NSURL *)url;
 
 #pragma mark -
 #pragma mark Properties
 #pragma mark -
+
 /// The title of the photo.
 @property (strong, nonatomic, readonly) NSString *title;
 

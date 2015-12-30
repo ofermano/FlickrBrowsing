@@ -19,8 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Push an item to the head of the stack.
 - (void)push:(id<NSCoding>)item;
 
-/// Getting the stack.
-- (NSArray *)stack;
+/// Returns the stack currently in the persisten memory.
+- (NSArray<id<NSCoding> > *)stack;
 
 @end
 

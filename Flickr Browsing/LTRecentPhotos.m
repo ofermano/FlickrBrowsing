@@ -29,7 +29,6 @@ static LTRecentPhotos *recentPhotos = nil;
 
 static NSString* const kAppSuit = @"Flickr Browsing";
 static NSString* const kHistoryKey = @"history";
-static const int kHistoryLength = 20;
 
 - (instancetype)init {
   if (self = [super init]) {

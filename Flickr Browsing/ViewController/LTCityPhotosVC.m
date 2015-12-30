@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Deligation of table view
 #pragma mark -
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)sender {
   return 1;
 }
@@ -70,6 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Moving to Photo view controller
 #pragma mark -
+
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
                                   sender:(nullable id)sender {
   return self.splitViewController.collapsed;

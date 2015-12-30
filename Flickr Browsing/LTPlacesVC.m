@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Delegate split view controller
 #pragma mark -
+
 - (void)awakeFromNib {
   [super awakeFromNib];
   self.splitViewController.delegate = self;
@@ -32,12 +33,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)splitViewController:(UISplitViewController *)sender
   shouldHideViewController:(UIViewController *)master
              inOrientation:(UIInterfaceOrientation)orientation {
-  return NO; // never hide it
+  // never hide it
+  return NO;
 }
 
 #pragma mark -
 #pragma mark Setters and Getters
 #pragma mark -
+
 - (LTFlickrPlaces *)places {
   if (!_places) {
     _places = [[LTFlickrPlaces alloc] init];
@@ -48,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Deligation of table view
 #pragma mark -
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)sender {
   return [self.places getNumberOfCountries];
 }

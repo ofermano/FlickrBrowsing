@@ -12,6 +12,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// We store up to 20 recent photos.
+static const int kHistoryLength = 20;
+
 /// A model class that holds the recent photos selected by the user.
 /// Since there should be only single list in the application (regardless where the user chose the
 /// photo) we should have a Singletone object.

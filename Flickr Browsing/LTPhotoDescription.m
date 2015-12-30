@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark NSCoding protocol
 #pragma mark -
+
 - (nullable id)initWithCoder:(NSCoder *)decoder {
   if (self = [super init]) {
     _title = [decoder decodeObjectForKey:@"title"];

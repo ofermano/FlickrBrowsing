@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Initialization
 #pragma mark -
+
 - (void)viewDidLoad {
   [super viewDidLoad];
   [self.scrollView addSubview:self.imageView];
@@ -42,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Setters and Getters
 #pragma mark -
+
 // The title is a propoerty of a super class thus we need to create a new instant of
 // \c PhotoDescription every access.
 - (LTPhotoDescription *)photoDescription {
@@ -89,6 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark ScrollView deligation
 #pragma mark -
+
 - (nullable UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
   return self.imageView;
 }
@@ -96,6 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 #pragma mark Handling image
 #pragma mark -
+
 - (void)startDownloadingImage {
   self.image = nil;
   if (!self.imageURL) {
