@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LTPhotoVC : UIViewController
 
 /// A pubic property so photo can be set from caller view-controller
-@property (strong, nonatomic, nullable) LTPhotoDescription *photoDescription;
+@property (strong, nonatomic) LTPhotoDescription *photoDescription;
 
 @end
 

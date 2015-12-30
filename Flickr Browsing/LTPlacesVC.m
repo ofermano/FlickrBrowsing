@@ -15,11 +15,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPlacesVC() <UISplitViewControllerDelegate>
-@property (strong, nonatomic, nullable) LTFlickrPlaces *places;
+@property (strong, nonatomic) LTFlickrPlaces *places;
 @property (assign) id <UISplitViewControllerDelegate> delegate;
 @end
-
-NS_ASSUME_NONNULL_END
 
 @implementation LTPlacesVC
 
@@ -58,7 +56,7 @@ NS_ASSUME_NONNULL_END
   return [self.places getNumberOfCitiesInCountry:section];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
   return [self.places getCountryByIndex:section];
 }
 
@@ -81,7 +79,7 @@ NS_ASSUME_NONNULL_END
   });
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(nullable id)sender {
   if (![[segue identifier] isEqualToString:@"City Segue"]) {
     return;
   }
@@ -97,4 +95,6 @@ NS_ASSUME_NONNULL_END
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
 

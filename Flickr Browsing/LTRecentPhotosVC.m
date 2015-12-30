@@ -14,10 +14,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotosVC()
-@property (strong, nonatomic, nullable) LTRecentPhotos *photos;
+@property (strong, nonatomic) LTRecentPhotos *photos;
 @end
-
-NS_ASSUME_NONNULL_END
 
 #pragma mark -
 #pragma mark Initialization
@@ -74,11 +72,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark Segue handling
 #pragma mark -
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
-                                  sender:(id)sender {
+                                  sender:(nullable id)sender {
   return self.splitViewController.collapsed;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(nullable id)sender {
   if (![[segue identifier] isEqualToString:@"Image Segue"]) {
     return;
   }
@@ -101,4 +99,6 @@ NS_ASSUME_NONNULL_END
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
 

@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LTCityPhotos : NSObject
 
 /// The designated \c init function requires the Flicker place ID.
-- (instancetype)initWithPlaceID:(nullable NSString *)placeID NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPlaceID:(NSString *)placeID NS_DESIGNATED_INITIALIZER;
 
 /// Loading all the photos from this city from the Flickr site.
 - (void)loadPhotos;

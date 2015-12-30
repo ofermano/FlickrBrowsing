@@ -32,12 +32,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Getting the country given its index.
 - (nullable NSString *)getCountryByIndex:(NSInteger)countryIndex;
 /// Getting a city given a country and city index.
-- (nullable NSString *)getCityInCountry:(nullable NSString *)country withIndex:(NSInteger)cityIndex;
+- (nullable NSString *)getCityInCountry:(NSString *)country withIndex:(NSInteger)cityIndex;
 /// Getting a province given a country and city index.
-- (nullable NSString *)getProvinceInCountry:(nullable NSString *)country
+- (nullable NSString *)getProvinceInCountry:(NSString *)country
                                   withIndex:(NSInteger)cityIndex;
 /// Getting the \c LTCityPhotos given a country and city index.
-- (nullable LTCityPhotos *)getImagesInCountry:(nullable NSString *)country
+- (nullable LTCityPhotos *)getImagesInCountry:(NSString *)country
                                     withIndex:(NSInteger)cityIndex;
 
 

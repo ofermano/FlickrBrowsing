@@ -11,6 +11,8 @@
 #import "LTRecentPhotos.h"
 #import "LTPhotoVC.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation LTCityPhotosVC
 
 #pragma mark -
@@ -69,11 +71,11 @@
 #pragma mark Moving to Photo view controller
 #pragma mark -
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
-                                  sender:(id)sender {
+                                  sender:(nullable id)sender {
   return self.splitViewController.collapsed;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(nullable id)sender {
   if (![[segue identifier] isEqualToString:@"Image Segue"]) {
     return;
   }
@@ -104,4 +106,6 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END
 

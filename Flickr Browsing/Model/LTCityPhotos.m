@@ -17,11 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) NSString *placeID;
 @end
 
-NS_ASSUME_NONNULL_END
 
 @implementation LTCityPhotos
-
-static const NSUInteger kMaxNumberOfPphtos = 50;
 
 - (instancetype)initWithPlaceID:(NSString *)placeID {
   if (self = [super init]) {
@@ -30,6 +27,8 @@ static const NSUInteger kMaxNumberOfPphtos = 50;
   }
   return self;
 }
+
+static const NSUInteger kMaxNumberOfPphtos = 50;
 
 - (void)loadPhotos {
   if (!self.placeID) {
@@ -48,19 +47,21 @@ static const NSUInteger kMaxNumberOfPphtos = 50;
   return [self.photos count];
 }
 
-- (NSString *)getTitleByIndex:(NSUInteger)index {
+- (nullable NSString *)getTitleByIndex:(NSUInteger)index {
   return [self.photos[index] valueForKeyPath:FLICKR_PHOTO_TITLE];
 }
 
-- (NSString *)getDescriptionByIndex:(NSUInteger)index {
+- (nullable NSString *)getDescriptionByIndex:(NSUInteger)index {
   return [self.photos[index] valueForKeyPath:FLICKR_PHOTO_DESCRIPTION];
 }
 
-- (NSURL *)getImageURLByIndex:(NSUInteger)index {
+- (nullable NSURL *)getImageURLByIndex:(NSUInteger)index {
   return [FlickrFetcher URLforPhoto:self.photos[index] format:FlickrPhotoFormatOriginal];
 }
 
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 

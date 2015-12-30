@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic, nullable) NSArray *sortedCountries;
 @end
 
-NS_ASSUME_NONNULL_END
-
 @implementation LTFlickrPlaces
 
 #pragma mark -
@@ -88,7 +86,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark -
 #pragma mark Queries
 #pragma mark -
-- (NSMutableDictionary *)placesByCountry {
+- (nullable NSMutableDictionary *)placesByCountry {
   if (!_placesByCountry) {
     _placesByCountry = [[NSMutableDictionary alloc] init];
   }
@@ -104,30 +102,21 @@ NS_ASSUME_NONNULL_END
   return [[self.placesByCountry objectForKey:country] count];
 }
 
-- (NSString *)getCountryByIndex:(NSInteger)countryIndex {
+- (nullable NSString *)getCountryByIndex:(NSInteger)countryIndex {
   return self.sortedCountries[countryIndex];
 }
 
-- (NSString *)getCityInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
-  if (!country) {
-    return nil;
-  }
+- (nullable NSString *)getCityInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return place.city;
 }
 
-- (NSString *)getProvinceInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
-  if (!country) {
-    return nil;
-  }
+- (nullable NSString *)getProvinceInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return place.province;
 }
 
-- (LTCityPhotos *)getImagesInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
-  if (!country) {
-    return nil;
-  }
+- (nullable LTCityPhotos *)getImagesInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return [[LTCityPhotos alloc] initWithPlaceID:place.place_id];
 }
@@ -136,3 +125,5 @@ NS_ASSUME_NONNULL_END
 
 @end
 
+
+NS_ASSUME_NONNULL_END

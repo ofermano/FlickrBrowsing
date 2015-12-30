@@ -11,14 +11,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPhotoVC () <UIScrollViewDelegate>
-@property (strong, nonatomic, nullable) NSURL *imageURL;
+@property (strong, nonatomic) NSURL *imageURL;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
-@property (strong, nonatomic, nullable) UIImageView *imageView;
+@property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic, nullable) UIImage *image;
 @end
-
-NS_ASSUME_NONNULL_END
 
 @implementation LTPhotoVC
 
@@ -74,11 +72,11 @@ NS_ASSUME_NONNULL_END
 }
 
 // Image is not an actual property we just propagate to image view.
-- (UIImage *)image {
+- (nullable UIImage *)image {
   return self.imageView.image;
 }
 
-- (void)setImage:(UIImage *)image {
+- (void)setImage:(nullable UIImage *)image {
   if (!image) {
     return;
   }
@@ -91,7 +89,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark -
 #pragma mark ScrollView deligation
 #pragma mark -
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+- (nullable UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
   return self.imageView;
 }
 
@@ -171,3 +169,5 @@ NS_ASSUME_NONNULL_END
 
 @end
 
+
+NS_ASSUME_NONNULL_END
