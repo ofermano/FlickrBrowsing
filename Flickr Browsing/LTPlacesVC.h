@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// This is the controller for the places MVC - the application main MVC.
-/// The class is responsible to ge the places from the model and maintain the places table view.
+/// The class is responsible to get the places from the model and maintain the places table view.
 @interface LTPlacesVC : UITableViewController
 
 @end

@@ -13,57 +13,64 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotos()
+
+/// The persistentmemory.
 @property (strong, nonatomic) LTPersistentUniqueStack *persistenMemory;
-@property (strong, nonatomic, nullable) NSArray *photos;
+
 @end
 
 @implementation LTRecentPhotos
 
-static LTRecentPhotos *recentPhotos = nil;
-+ (LTRecentPhotos *)list {
-  if (!recentPhotos) {
-    recentPhotos = [[LTRecentPhotos alloc] init];
-  }
-  return recentPhotos;
-}
-
 static NSString* const kAppSuit = @"Flickr Browsing";
 static NSString* const kHistoryKey = @"history";
+
+#pragma mark -
+#pragma mark Initializer
+#pragma mark -
 
 - (instancetype)init {
   if (self = [super init]) {
     _persistenMemory = [[LTPersistentUniqueStack alloc] initAppSuit:kAppSuit andKey:kHistoryKey andSize:kHistoryLength];
-    self.photos = [self.persistenMemory stack];
   }
   return self;
 }
 
-- (void)update {
-  self.photos = [self.persistenMemory stack];
+#pragma mark -
+#pragma mark Implementing background loading protocol
+#pragma mark -
+
+- (void)load {
+  dispatch_queue_t queue = dispatch_queue_create("LoadQueue", NULL);
+  dispatch_async(queue, ^{
+    NSArray<LTPhotoDescription *> *descriptions = [self getPhotos];
+    [self notify:descriptions];
+  });
 }
+
+- (NSString *)observingKey {
+  return @"RecentDescriptionsLoaded";
+}
+
+- (NSString *)dataKey {
+  return @"descriptions";
+}
+
+- (void)notify:(NSArray<LTPhotoDescription *> *)desscriptions {
+  [[NSNotificationCenter defaultCenter] postNotificationName:[self observingKey] object:self userInfo:@{[self dataKey]:desscriptions}];
+}
+
+- (NSArray<LTPhotoDescription *> *)getPhotos {
+  return (NSArray<LTPhotoDescription *> *)[self.persistenMemory stack];
+}
+
+#pragma mark -
+#pragma mark Managing the recent photos
+#pragma mark -
 
 - (void)push:(LTPhotoDescription *)photoDescription {
   [self.persistenMemory push:photoDescription];
-  [self update];
 }
-
-- (NSUInteger)getNumberOfPhotos {
-  return [self.photos count];
-}
-
-- (NSString *)getTitleByIndex:(NSUInteger)index {
-  LTPhotoDescription *description = self.photos[index];
-  return description.title;
-}
-
-- (LTPhotoDescription *)getDescriptionByIndex:(NSUInteger)index {
-  LTPhotoDescription *description = self.photos[index];
-  return description;
-}
-
 
 @end
 
 NS_ASSUME_NONNULL_END
-
-

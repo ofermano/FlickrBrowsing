@@ -12,9 +12,9 @@
 
 + (NSURL *)URLForQuery:(NSString *)query
 {
-    query = [NSString stringWithFormat:@"%@&format=json&nojsoncallback=1&api_key=%@", query, FlickrAPIKey];
-    query = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    return [NSURL URLWithString:query];
+  query = [NSString stringWithFormat:@"%@&format=json&nojsoncallback=1&api_key=%@", query, FlickrAPIKey];
+  query = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  return [NSURL URLWithString:query];
 }
 
 + (NSURL *)URLforTopPlaces

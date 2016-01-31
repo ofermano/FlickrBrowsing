@@ -14,17 +14,23 @@ NS_ASSUME_NONNULL_BEGIN
 /// This struct should be used in order to store the read data in data structure.
 @interface LTPlaceData : NSObject
 
+/// Init function with all parameters
+- (instancetype)initWithCountry:(NSString *)country
+                       province:(NSString *)province
+                           city:(NSString *)city
+                     andPlaceID:(NSString *)placeID;
+
 /// The country in width the photo was taken place.
-@property (strong, nonatomic, nullable) NSString *country;
+@property (strong, nonatomic, nullable, readonly) NSString *country;
 
 /// The province in width the photo was taken place.
-@property (strong, nonatomic, nullable) NSString *province;
+@property (strong, nonatomic, nullable, readonly) NSString *province;
 
 /// The city in width the photo was taken place.
-@property (strong, nonatomic, nullable) NSString *city;
+@property (strong, nonatomic, nullable, readonly) NSString *city;
 
 /// The place ID in width the photo was taken place.
-@property (strong, nonatomic, nullable) NSString *place_id;
+@property (strong, nonatomic, nullable, readonly) NSString *place_id;
 
 @end
 

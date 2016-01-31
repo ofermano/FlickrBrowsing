@@ -12,9 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation LTPhotoDescription
 
-- (instancetype) initWithTitle:(nullable NSString *)title andURL:(nullable NSURL *)url {
+- (instancetype) initWithTitle:(nullable NSString *)title
+                          text:(nullable NSString *)text
+                        andURL:(nullable NSURL *)url {
   if (self = [super init]) {
     _title = title;
+    _text = text;
     _url = url;
   }
   return self;
@@ -34,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id)initWithCoder:(NSCoder *)decoder {
   if (self = [super init]) {
     _title = [decoder decodeObjectForKey:@"title"];
+    _text = [decoder decodeObjectForKey:@"text"];
     _url = [decoder decodeObjectForKey:@"url"];
   }
   return self;
@@ -41,10 +45,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)encodeWithCoder:(NSCoder *)encoder {
   [encoder encodeObject:self.title forKey:@"title"];
+  [encoder encodeObject:self.text forKey:@"text"];
   [encoder encodeObject:self.url forKey:@"url"];
 }
 
 @end
 
 NS_ASSUME_NONNULL_END
-

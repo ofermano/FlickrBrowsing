@@ -1,4 +1,4 @@
-//
+  //
 //  LTPhotoVC.m
 //  Flickr Browsing
 //
@@ -8,17 +8,45 @@
 
 #import "LTPhotoVC.h"
 
+#import "LTImageLoader.h"
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPhotoVC () <UIScrollViewDelegate>
-@property (strong, nonatomic) NSURL *imageURL;
+
+/// The class that loads the image in the background.
+@property (strong,nonatomic) LTImageLoader *imageLoader;
+
+/// The scroll view that holds the image.
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+
+/// The image view (in the scroll view) that holds the image.
 @property (strong, nonatomic) UIImageView *imageView;
+
+/// The image we display.
 @property (strong, nonatomic, nullable) UIImage *image;
+
+/// A spinner to indicates loading is in progress.
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @end
 
 @implementation LTPhotoVC
+
+#pragma mark -
+#pragma mark Restoration functions.
+#pragma mark -
+
+- (void)setRestoreData:(id)restoreData {
+  if (![restoreData isKindOfClass:[UIImage class]])
+    return;
+  UIImage *imageToRestore = (UIImage *)restoreData;
+  self.image = imageToRestore;
+}
+
+- (id)restoreData {
+  return self.image;
+}
 
 #pragma mark -
 #pragma mark Initialization
@@ -29,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self.scrollView addSubview:self.imageView];
   
   // If the view is loaded in a split view controller we need to turn off animation upon loading.
-  if (!self.imageURL) {
+  if (!self.photoDescription) {
     [self.spinner stopAnimating];
   }
 }
@@ -37,38 +65,41 @@ NS_ASSUME_NONNULL_BEGIN
 // After each layout change we will reset the image size to match the new window size.
 - (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
-  [self fitImageToWindow];
+  self.scrollView.contentInset = UIEdgeInsetsZero;
+  [self imageFitToFrame];
 }
 
 #pragma mark -
 #pragma mark Setters and Getters
 #pragma mark -
 
-// The title is a propoerty of a super class thus we need to create a new instant of
-// \c PhotoDescription every access.
-- (LTPhotoDescription *)photoDescription {
-  return [[LTPhotoDescription alloc] initWithTitle:self.title andURL:self.imageURL];
+- (LTImageLoader *)imageLoader {
+  if (!_imageLoader) {
+    _imageLoader = [[LTImageLoader alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(imageLoaded:)
+                                                 name:[_imageLoader observingKey]
+                                               object:_imageLoader];
+
+  }
+  return _imageLoader;
 }
 
 - (void)setPhotoDescription:(LTPhotoDescription *)photoDescription {
-  self.imageURL = photoDescription.url;
+  _photoDescription = photoDescription;
   self.title = photoDescription.title;
-}
-
-- (void)setImageURL:(NSURL *)imageURL {
-  _imageURL = imageURL;
   [self startDownloadingImage];
 }
 
 - (void)setScrollView:(UIScrollView *)scrollView {
   _scrollView = scrollView;
   _scrollView.delegate = self;
-  self.scrollView.contentSize = self.image  ?  self.image.size : CGSizeZero;
 }
 
 - (UIImageView *)imageView {
   if (!_imageView) {
     _imageView = [[UIImageView alloc]init];
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
   }
   return _imageView;
 }
@@ -83,9 +114,14 @@ NS_ASSUME_NONNULL_BEGIN
     return;
   }
   self.imageView.image = image;
-  [self fitImageToWindow];
-  // Once we got the image we need to stop spinner.
-  [self.spinner stopAnimating];
+  CGFloat imageViewScale = [self calculateScaleToImage:self.scrollView.frame.size];
+  CGRect imageViewRect = [self calculateImageViewSize:imageViewScale];
+  [UIView transitionWithView:self.imageView
+                    duration:0.5f
+                     options:UIViewAnimationOptionTransitionFlipFromLeft
+                  animations:^{ self.imageView.frame = imageViewRect;}
+                  completion:^(BOOL fin){[self resetScrollViewSize:imageViewScale];[self.spinner stopAnimating];}];
+  
 }
 
 #pragma mark -
@@ -96,82 +132,75 @@ NS_ASSUME_NONNULL_BEGIN
   return self.imageView;
 }
 
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView
+                       withView:(nullable UIView *)view
+                        atScale:(CGFloat)scale {
+  CGFloat imageScale = [self calculateScaleToImage:self.imageView.frame.size];
+  self.imageView.frame = [self calculateImageViewSize:imageScale];
+  self.scrollView.contentSize = self.imageView.frame.size;
+}
+
 #pragma mark -
-#pragma mark Handling image
+#pragma mark Image loading
 #pragma mark -
 
 - (void)startDownloadingImage {
   self.image = nil;
-  if (!self.imageURL) {
+  if (!self.photoDescription) {
     return;
   }
   [self.spinner startAnimating];
-  NSURLRequest *request = [NSURLRequest requestWithURL:self.imageURL];
-  NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-  NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-  NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
-                                                  completionHandler:^(NSURL *file,
-                                                                      NSURLResponse *response,
-                                                                      NSError *error) {
-    if (error) {
-      return;
-    }
-    if (![request.URL isEqual:self.imageURL]) {
-      return;
-    }
-    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:file]];
-    dispatch_async(dispatch_get_main_queue(), ^{self.image = image; });
-  }];
-  [task resume];
+  self.imageLoader.url = self.photoDescription.url;
+  [self.imageLoader load];
 }
 
-- (void)fitImageToWindow {
-  if (!self.image) {
-    return;
-  }
-  CGFloat imageViewScale = [self calculateMaximalRatioBetweenImageAndScrollView];
-  [self resetImageViewSize:imageViewScale];
+- (void)imageLoaded:(NSNotification *)notification {
+  UIImage *image = [notification.userInfo valueForKey:[self.imageLoader dataKey]];
+  self.restoreData = image;
+}
+
+#pragma mark -
+#pragma mark Size handling
+#pragma mark -
+
+- (IBAction)resetSize:(UITapGestureRecognizer *)sender {
+  [self imageFitToFrame];
+}
+
+- (void)imageFitToFrame {
+  CGFloat imageViewScale = [self calculateScaleToImage:self.scrollView.frame.size];
+  CGRect imageViewRect = [self calculateImageViewSize:imageViewScale];
+  self.imageView.transform = CGAffineTransformIdentity;
+  self.imageView.frame = imageViewRect;
   [self resetScrollViewSize:imageViewScale];
 }
 
-- (IBAction)resetSize:(UITapGestureRecognizer *)sender {
-  [self resetImageViewScale];
-  // The scroll view maximal zoom is the reset size.
-  [self resetImageViewSize:self.scrollView.maximumZoomScale];
-  [self resetScrollViewSize:self.scrollView.maximumZoomScale];
-}
-
-- (CGFloat)calculateMaximalRatioBetweenImageAndScrollView {
-  CGFloat widthRatio = self.image.size.width / self.scrollView.frame.size.width;
-  CGFloat heightRatio = self.image.size.height / self.scrollView.frame.size.height;
+- (CGFloat)calculateScaleToImage:(CGSize)size {
+  CGFloat widthRatio = self.image.size.width / size.width;
+  CGFloat heightRatio = self.image.size.height / size.height;
   return MAX(widthRatio,heightRatio);
 }
 
-- (void)resetImageViewSize:(CGFloat)scale {
-  [self.imageView sizeToFit];
-  CGRect  viewFrame = self.imageView.frame;
+- (CGRect)calculateImageViewSize:(CGFloat)scale {
+  CGRect  viewFrame;
+  viewFrame.size = self.image.size;
   viewFrame.origin = CGPointMake(0,0);
   viewFrame.size.width /= scale;
   viewFrame.size.height /= scale;
-  self.imageView.frame = viewFrame;
+  viewFrame.size.width = MAX(self.scrollView.frame.size.width, viewFrame.size.width);
+  viewFrame.size.height = MAX(self.scrollView.frame.size.height, viewFrame.size.height);
+  return viewFrame;
 }
 
 - (void)resetScrollViewSize:(CGFloat)imageViewScale {
-  self.scrollView.contentSize = self.image.size;
-  // Since whole image is in window offset should be nullified.
+  self.scrollView.contentSize = self.imageView.frame.size;
   self.scrollView.contentOffset = CGPointMake(0,0);
+
   // Since we start that image fits the window there is no reson to scale down
   self.scrollView.minimumZoomScale = 1.0;
-  self.scrollView.maximumZoomScale = imageViewScale; // We can scale up to maximal image size.
-}
-
-- (void)resetImageViewScale {
-  CGAffineTransform viewTransform = self.imageView.transform;
-  viewTransform = CGAffineTransformMakeScale(1, 1);
-  self.imageView.transform = viewTransform;
+  self.scrollView.maximumZoomScale = imageViewScale;
 }
 
 @end
-
 
 NS_ASSUME_NONNULL_END

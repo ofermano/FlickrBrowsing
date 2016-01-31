@@ -8,44 +8,68 @@
 
 #import "LTPlacesVC.h"
 
-#import "LTCityPhotos.h"
-#import "LTFlickrPlaces.h"
-#import "LTCityPhotosVC.h"
+#import "LTPlacesCollection.h"
+#import "LTCityPhotosLoader.h"
+#import "LTFlickrPlacesLoader.h"
+#import "LTSplitViewDelegate.h"
+#import "LTDescriptionsTable.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LTPlacesVC() <UISplitViewControllerDelegate>
-@property (strong, nonatomic) LTFlickrPlaces *places;
-@property (assign) id <UISplitViewControllerDelegate> delegate;
+@interface LTPlacesVC()
+
+/// The places needs to be displayed
+@property (strong,nonatomic) LTPlacesCollection *places;
+
+/// The loader of the places.
+@property (strong, nonatomic) LTFlickrPlacesLoader *placesLoader;
+
+/// Deligation class for UISplitView
+@property (strong,nonatomic) LTSplitViewDelegate *splitViewDelegate;
+
 @end
 
 @implementation LTPlacesVC
 
 #pragma mark -
-#pragma mark Delegate split view controller
+#pragma mark Initializers
 #pragma mark -
 
 - (void)awakeFromNib {
   [super awakeFromNib];
-  self.splitViewController.delegate = self;
+  self.splitViewController.delegate = self.splitViewDelegate;
 }
 
-- (BOOL)splitViewController:(UISplitViewController *)sender
-  shouldHideViewController:(UIViewController *)master
-             inOrientation:(UIInterfaceOrientation)orientation {
-  // never hide it
-  return NO;
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  [self.placesLoader load];
 }
 
 #pragma mark -
 #pragma mark Setters and Getters
 #pragma mark -
 
-- (LTFlickrPlaces *)places {
-  if (!_places) {
-    _places = [[LTFlickrPlaces alloc] init];
+- (LTFlickrPlacesLoader *)placesLoader {
+  if (!_placesLoader) {
+    _placesLoader = [[LTFlickrPlacesLoader alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(placesLoaded:) name:[_placesLoader observingKey] object:_placesLoader];
   }
-  return _places;
+  return _placesLoader;
+}
+
+- (LTSplitViewDelegate *)splitViewDelegate {
+  if (!_splitViewDelegate)
+    _splitViewDelegate = [[LTSplitViewDelegate alloc] init];
+  return _splitViewDelegate;
+}
+
+#pragma mark -
+#pragma mark Load handling
+#pragma mark -
+
+- (void)placesLoaded:(NSNotification *)notification {
+  self.places = [notification.userInfo valueForKey:[self.placesLoader dataKey]];
+  dispatch_async(dispatch_get_main_queue(), ^{ UITableView *tableView = (UITableView *)self.view; [tableView reloadData]; [self.refreshControl endRefreshing];});
 }
 
 #pragma mark -
@@ -74,28 +98,29 @@ NS_ASSUME_NONNULL_BEGIN
   return cell;
 }
 
-- (IBAction)refresh:(UIRefreshControl *)sender {
-  [self.refreshControl beginRefreshing];
-  dispatch_queue_t queue = dispatch_queue_create("RefresQueue", NULL);
-  dispatch_async(queue, ^{
-    self.places = [[LTFlickrPlaces alloc] init];
-    dispatch_async(dispatch_get_main_queue(), ^{[self.refreshControl endRefreshing];});
-  });
-}
+#pragma mark -
+#pragma mark Segue handling
+#pragma mark -
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(nullable id)sender {
   if (![[segue identifier] isEqualToString:@"City Segue"]) {
     return;
   }
-  UIViewController *viewController = [segue destinationViewController];
-  if (![viewController isKindOfClass:[LTCityPhotosVC class]]) {
-    return;
-  }
   NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
   NSString *country = [self.places getCountryByIndex:indexPath.section];
-  LTCityPhotos *images = [self.places getImagesInCountry:country withIndex:indexPath.item];
-  LTCityPhotosVC *photosVC = [segue destinationViewController];
-  photosVC.photos = images;
+  
+  LTDescriptionsTable *cityPhotosVC = [segue destinationViewController];
+  LTCityPhotosLoader *loader = cityPhotosVC.desscriptionLoader;
+  loader.placeID = [self.places getPlaceIDInCountry:country withIndex:indexPath.item];
+}
+
+#pragma mark -
+#pragma mark Refresh
+#pragma mark -
+
+- (IBAction)refresh:(UIRefreshControl *)sender {
+  [self.refreshControl beginRefreshing];
+  [self.placesLoader load];
 }
 
 @end

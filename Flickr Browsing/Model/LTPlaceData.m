@@ -10,5 +10,17 @@
 
 @implementation LTPlaceData
 
-@end
+- (instancetype)initWithCountry:(NSString *)country
+                       province:(NSString *)province
+                           city:(NSString *)city
+                     andPlaceID:(NSString *)placeID {
+  if (self = [super init]) {
+    _country = country;
+    _province = province;
+    _city = city;
+    _place_id = placeID;
+  }
+  return self;
+}
 
+@end
