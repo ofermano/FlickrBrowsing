@@ -8,16 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-#import "LTPhotoDescription.h"
 #import "LTDetailViewProtocol.h"
+
+@class LTPhotoDescription;
 
 NS_ASSUME_NONNULL_BEGIN
 
 /// This view controller is responsible for displaying a given image.
+///
 /// It is called once a photo was selected.
-@interface LTPhotoVC : UIViewController<LTDetailViewProtocol>
+@interface LTPhotoVC : UIViewController <LTDetailViewProtocol>
 
-/// A pubic property so photo can be set from caller view-controller
+/// The description of the photo to be displayed.
 @property (strong, nonatomic) LTPhotoDescription *photoDescription;
 
 @end

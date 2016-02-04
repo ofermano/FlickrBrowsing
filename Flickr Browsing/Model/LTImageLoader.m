@@ -7,38 +7,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LTImageLoader()
 
-/// A ditionary that maps URLs to images for caching.
-@property (strong,nonatomic) NSMutableDictionary *imageCache;
+/// Cache for last loaded images.
+@property (strong, nonatomic) NSCache *imageCache;
 
-/// List of the last URLs called to manage the cache.
-@property (strong,nonatomic) NSMutableArray<NSString *> *lastImages;
+/// The URL session for image loading.
+@property (strong, nonatomic) NSURLSession *session;
 
 @end
 
 @implementation LTImageLoader
 
-static NSUInteger kCacheSize = 5;
+// The size of the cache we store.
+static const NSUInteger kCacheSize = 5;
 
-- (NSString *)observingKey {
+- (NSString *)notificationName {
   return @"ImageLoaded";
 }
 
 - (NSString *)dataKey {
   return @"image";
 }
-
-- (NSMutableDictionary *)imageCache {
+- (NSCache *)imageCache {
   if (!_imageCache) {
-    _imageCache = [[NSMutableDictionary alloc] init];
+    _imageCache = [[NSCache alloc]init];
+    [_imageCache setCountLimit:kCacheSize];
   }
   return _imageCache;
 }
 
-- (NSMutableArray<NSString *> *)lastImages {
-  if (!_lastImages) {
-    _lastImages = [[NSMutableArray<NSString *> alloc] init];
+- (NSURLSession *)session {
+  if (!_session) {
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    _session = [NSURLSession sessionWithConfiguration:config];
   }
-  return _lastImages;
+  return _session;
 }
 
 - (void)load {
@@ -49,10 +51,8 @@ static NSUInteger kCacheSize = 5;
 }
 
 - (BOOL)useCache:(NSURL *)url {
-  UIImage *cachedImage = [self.imageCache valueForKey:url.absoluteString];
+  UIImage *cachedImage = [self.imageCache objectForKey:url.absoluteString];
   if (cachedImage) {
-    [self.lastImages removeObject:url.absoluteString];
-    [self.lastImages addObject:url.absoluteString];
     [self notify:cachedImage];
     return YES;
   }
@@ -61,9 +61,7 @@ static NSUInteger kCacheSize = 5;
 
 - (void)backgroundLoading:(NSURL *)url {
   NSURLRequest *request = [NSURLRequest requestWithURL:url];
-  NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-  NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-  NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
+  NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request
     completionHandler:^(NSURL *file, NSURLResponse *response, NSError *error) {
       if (error) {
         return;
@@ -72,22 +70,16 @@ static NSUInteger kCacheSize = 5;
         return;
       }
       UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:file]];
-      while ([self.lastImages count] >= kCacheSize) {
-        NSString *oldestURL = [self.lastImages firstObject];
-        [self.lastImages removeObject:oldestURL];
-        [self.imageCache removeObjectForKey:oldestURL];
-      }
-      [self.lastImages addObject:url.absoluteString];
-      [self.imageCache setValue:image forKey:url.absoluteString];
-      dispatch_async(dispatch_get_main_queue(), ^{[self notify:image]; });
+      [self.imageCache setObject:image forKey:url.absoluteString];
+      [self notify:image];
     }];
   [task resume];
 }
 
 - (void)notify:(UIImage *)image {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self observingKey]
+  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
                                                       object:self
-                                                    userInfo:@{[self dataKey]:image}];
+                                                    userInfo:@{[self dataKey]: image}];
 }
 
 @end

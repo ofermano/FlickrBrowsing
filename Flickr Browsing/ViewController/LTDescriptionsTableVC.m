@@ -1,15 +1,37 @@
-// Copyright (c) 2016 Lightricks. All rights reserved.
-// Created by Ofer Mano.
+//
+//  LTPlacesVC.m
+//  Flickr Browsing
+//
+//  Created by Ofer Mano on 14/12/2015.
+//  Copyright © 2015 Lightricks. All rights reserved.
+//
 
-#import "LTDescriptionsTable.h"
+#import "LTDescriptionsTableVC.h"
 
 #import "UISplitViewController+LTVirtualDetail.h"
+
 #import "LTDescriptionLoaderFactory.h"
+#import "LTPhotoDescription.h"
 #import "LTPhotoVC.h"
+#import "LTRecentPhotos.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation LTDescriptionsTable
+@interface LTDescriptionsTableVC()
+
+/// The descriptions to manage.
+@property (strong, nonatomic) NSArray<LTPhotoDescription *> *descriptions;
+
+/// The recent photos (need to push upon selection).
+@property (strong, nonatomic) LTRecentPhotos *recentPhotos;
+
+/// A flag that indicates that places list is being refreshed and in this case we should not allow
+/// the user to select.
+@property (nonatomic) BOOL refreshing;
+
+@end
+
+@implementation LTDescriptionsTableVC
 
 #pragma mark -
 #pragma mark Initialization
@@ -17,19 +39,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  [self.desscriptionLoader load];
+  self.refreshing = YES;
+  [self.descriptionLoader load];
 }
 
 #pragma mark -
 #pragma mark Setters and getters
 #pragma mark -
 
-- (id<LTBackgroundLoaderProtocol>)desscriptionLoader {
-  if (!_desscriptionLoader) {
-    _desscriptionLoader = [LTDescriptionLoaderFactory allocateDescriptionLoader:self.restorationIdentifier];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(descriptionLoaded:) name:[_desscriptionLoader observingKey] object:_desscriptionLoader];
+- (nullable id<LTBackgroundLoaderProtocol>)descriptionLoader {
+  if (!_descriptionLoader) {
+    _descriptionLoader = [LTDescriptionLoaderFactory
+                           allocateDescriptionLoaderForName:self.restorationIdentifier];
+    if (_descriptionLoader) {
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(descriptionLoaded:)
+                                                   name:[_descriptionLoader notificationName]
+                                                 object:_descriptionLoader];
+    }
   }
-  return _desscriptionLoader;
+  return _descriptionLoader;
 }
 
 - (LTRecentPhotos *)recentPhotos {
@@ -44,8 +72,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 - (void)descriptionLoaded:(NSNotification *)notification {
-  self.descriptions = [notification.userInfo valueForKey:[self.desscriptionLoader dataKey]];
-  dispatch_async(dispatch_get_main_queue(), ^{ UITableView *tableView = (UITableView *)self.view; [tableView reloadData]; [self.refreshControl endRefreshing];});
+  self.descriptions = [notification.userInfo valueForKey:[self.descriptionLoader dataKey]];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    UITableView *tableView = (UITableView *)self.view;
+    [tableView reloadData];
+    self.refreshing = NO;
+    [self.refreshControl endRefreshing];
+  });
 }
 
 #pragma mark -
@@ -70,13 +103,15 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)tableView:(UITableView *)sender didSelectRowAtIndexPath:(NSIndexPath *)path {
+  if (self.refreshing) {
+    return;
+  }
   if (self.splitViewController.collapsed) {
     return;
   }
   LTPhotoVC *photoVC = self.splitViewController.viewControllers[1];
   photoVC.photoDescription = self.descriptions[path.item];
   [self.recentPhotos push:self.descriptions[path.item]];
-  
 }
 
 #pragma mark -
@@ -85,7 +120,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
                                   sender:(nullable id)sender {
-  //  return NO;
+  if (self.refreshing) {
+    return NO;
+  }
   return self.splitViewController.collapsed;
 }
 
@@ -113,7 +150,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (IBAction)refresh:(UIRefreshControl *)sender {
   [self.refreshControl beginRefreshing];
-  [self.desscriptionLoader load];
+  self.refreshing = YES;
+  [self.descriptionLoader load];
 }
 
 @end

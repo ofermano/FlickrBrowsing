@@ -9,19 +9,23 @@
 #import "LTRecentPhotos.h"
 
 #import "LTPersistentUniqueStack.h"
+#import "LTPhotoDescription.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotos()
 
-/// The persistentmemory.
-@property (strong, nonatomic) LTPersistentUniqueStack *persistenMemory;
+/// The persistent memory we store the recent photos list.
+@property (strong, nonatomic) LTPersistentUniqueStack *persistentMemory;
 
 @end
 
 @implementation LTRecentPhotos
 
+// The application key in the persistent memory.
 static NSString* const kAppSuit = @"Flickr Browsing";
+
+// The recent photos key in the persistent memory.
 static NSString* const kHistoryKey = @"history";
 
 #pragma mark -
@@ -30,24 +34,26 @@ static NSString* const kHistoryKey = @"history";
 
 - (instancetype)init {
   if (self = [super init]) {
-    _persistenMemory = [[LTPersistentUniqueStack alloc] initAppSuit:kAppSuit andKey:kHistoryKey andSize:kHistoryLength];
+    _persistentMemory = [[LTPersistentUniqueStack alloc] initAppSuit:kAppSuit
+                                                              andKey:kHistoryKey
+                                                             andSize:kHistoryLength];
   }
   return self;
 }
 
 #pragma mark -
-#pragma mark Implementing background loading protocol
+#pragma mark LTBackgroundLoaderProtocol
 #pragma mark -
 
 - (void)load {
-  dispatch_queue_t queue = dispatch_queue_create("LoadQueue", NULL);
+  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     NSArray<LTPhotoDescription *> *descriptions = [self getPhotos];
     [self notify:descriptions];
   });
 }
 
-- (NSString *)observingKey {
+- (NSString *)notificationName {
   return @"RecentDescriptionsLoaded";
 }
 
@@ -55,12 +61,14 @@ static NSString* const kHistoryKey = @"history";
   return @"descriptions";
 }
 
-- (void)notify:(NSArray<LTPhotoDescription *> *)desscriptions {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self observingKey] object:self userInfo:@{[self dataKey]:desscriptions}];
+- (void)notify:(NSArray<LTPhotoDescription *> *)descriptions {
+  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
+                                                      object:self
+                                                    userInfo:@{[self dataKey]:descriptions}];
 }
 
 - (NSArray<LTPhotoDescription *> *)getPhotos {
-  return (NSArray<LTPhotoDescription *> *)[self.persistenMemory stack];
+  return (NSArray<LTPhotoDescription *> *)[self.persistentMemory stack];
 }
 
 #pragma mark -
@@ -68,7 +76,7 @@ static NSString* const kHistoryKey = @"history";
 #pragma mark -
 
 - (void)push:(LTPhotoDescription *)photoDescription {
-  [self.persistenMemory push:photoDescription];
+  [self.persistentMemory push:photoDescription];
 }
 
 @end

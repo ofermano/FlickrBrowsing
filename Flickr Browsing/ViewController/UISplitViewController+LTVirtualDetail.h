@@ -7,11 +7,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A category to UISplitView that adds an interface of virtual detail.
+/// A category of \c UISplitViewController that adds a protocl of virtual detail.
 @interface UISplitViewController (LTVirtualDetail)
 
 /// The virtual detail.
-@property (strong,nonatomic) UIViewController<LTDetailViewProtocol> *virtualDetail;
+@property (strong, nonatomic) UIViewController<LTDetailViewProtocol> *virtualDetail;
 
 @end
 

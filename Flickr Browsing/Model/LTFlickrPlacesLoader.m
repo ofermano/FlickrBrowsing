@@ -14,22 +14,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @implementation LTFlickrPlacesLoader
 
 #pragma mark -
-#pragma mark Implementing background loading protocol
+#pragma mark LTBackgroundLoaderProtocol
 #pragma mark -
 
 - (void)load {
-  dispatch_queue_t queue = dispatch_queue_create("LoadQueue", NULL);
+  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     LTPlacesCollection *places = [self backgroundLoad];
     [self notify:places];
   });
 }
 
-- (NSString *)observingKey {
+- (NSString *)notificationName {
   return @"PlacesLoaded";
 }
 
@@ -37,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
   return @"places";}
 
 - (void)notify:(LTPlacesCollection *)places {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self observingKey]
+  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
                                                       object:self
                                                     userInfo:@{[self dataKey]:places}];
 }
@@ -77,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
   NSArray *record = [[flickrPlace valueForKey:FLICKR_PLACE_NAME] componentsSeparatedByString:@", "];
   NSString *placeID = [flickrPlace valueForKey:FLICKR_PLACE_ID];
   LTPlaceData *data = [[LTPlaceData alloc] initWithCountry:[record lastObject]
-                                                  province:([record count] ==3 ? record[1]:nil)
+                                                  province:([record count] == 3 ? record[1] : nil)
                                                       city:record[0]
                                                 andPlaceID:placeID];
   return data;
@@ -92,7 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
                                 from:(NSMutableDictionary *)placesByCountry {
   NSMutableArray *countryPlaces = [placesByCountry objectForKey:country];
   if (!countryPlaces) {
-    countryPlaces = [[NSMutableArray alloc] init];
+    countryPlaces = [NSMutableArray array];
     [placesByCountry setObject:countryPlaces forKey:country];
   }
   return countryPlaces;

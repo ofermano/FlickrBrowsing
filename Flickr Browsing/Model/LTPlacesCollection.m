@@ -3,19 +3,26 @@
 
 #import "LTPlacesCollection.h"
 
+#import "LTPlaceData.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPlacesCollection()
-@property (strong,nonatomic,readonly) NSArray *countries;
-@property (strong,nonatomic,readonly) NSDictionary *placesByCountry;
+
+/// A sorted array of the countries.
+@property (strong, readonly, nonatomic) NSArray *countries;
+
+// A dictionary with for each country and array of cities.
+@property (strong, readonly, nonatomic) NSDictionary *placesByCountry;
+
 @end
 
 @implementation LTPlacesCollection
 
 - (instancetype)initWithCountries:(NSArray *)countries andPlaces:(NSDictionary *)placesByCountry {
   if (self = [super init]) {
-    _countries = countries;
-    _placesByCountry = placesByCountry;
+    _countries = [countries copy];
+    _placesByCountry = [placesByCountry copy];
   }
   return self;
 }
@@ -44,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (nullable NSString *)getPlaceIDInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
+  NSArray *array = [self.placesByCountry objectForKey:country];
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return place.place_id;
 }

@@ -1,7 +1,7 @@
 // Copyright (c) 2016 Lightricks. All rights reserved.
 // Created by Ofer Mano.
 
-#import <foundation/foundation.h>
+#import <Foundation/Foundation.h>
 
 #import "LTBackgroundLoaderProtocol.h"
 
@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LTDescriptionLoaderFactory : NSObject
 
 /// Creating the description loader given its name.
-+ (id<LTBackgroundLoaderProtocol>)allocateDescriptionLoader:(NSString *)name;
++ (nullable id<LTBackgroundLoaderProtocol>)allocateDescriptionLoaderForName:(NSString *)name;
 
 @end
 

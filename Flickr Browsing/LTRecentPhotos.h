@@ -8,15 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-#import "LTPhotoDescription.h"
 #import "LTBackgroundLoaderProtocol.h"
+
+@class LTPhotoDescription;
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// We store up to 20 recent photos.
+/// The number of recent photos we store.
 static const int kHistoryLength = 20;
 
-/// A class that load and set the recent photos
+/// A class that loads and sets the recent photos.
 @interface LTRecentPhotos : NSObject <LTBackgroundLoaderProtocol>
 
 /// Adds a photo descrption as the most recent photo.

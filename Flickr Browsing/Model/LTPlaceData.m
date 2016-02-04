@@ -15,10 +15,10 @@
                            city:(NSString *)city
                      andPlaceID:(NSString *)placeID {
   if (self = [super init]) {
-    _country = country;
-    _province = province;
-    _city = city;
-    _place_id = placeID;
+    _country = [country copy];
+    _province = [province copy];
+    _city = [city copy];
+    _place_id = [placeID copy];
   }
   return self;
 }

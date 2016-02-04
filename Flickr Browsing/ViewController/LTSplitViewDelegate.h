@@ -8,12 +8,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// The delegation of the split view to add application specific (and handling moving from
-/// single view to split view).
-@interface LTSplitViewDelegate : NSObject <UISplitViewControllerDelegate,LTVirtualDetailProtocol>
+/// The delegation of the split view to improve behavior when rotating a iPhone 6+ (moving from
+/// detailed to collapse)
+@interface LTSplitViewDelegate : NSObject <UISplitViewControllerDelegate, LTVirtualDetailProtocol>
 
-/// The view that sould be used as detailed.
-@property (strong,nonatomic,nullable) UIViewController<LTDetailViewProtocol> *virtualDetail;
+/// A virtualDetail is a view controller that is added as when split view is collapsed and when
+/// moving to a detail view it should apear in the detailed view.
+@property (strong, nonatomic, nullable) UIViewController<LTDetailViewProtocol> *virtualDetail;
 
 @end
 

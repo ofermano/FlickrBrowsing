@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation LTCityPhotosLoader
 
-- (NSString *)observingKey {
+- (NSString *)notificationName {
   return @"DescriptionsLoaded";
 }
 
@@ -23,10 +23,11 @@ NS_ASSUME_NONNULL_BEGIN
   return @"descriptions";
 }
 
-static const NSUInteger kMaxNumberOfPphtos = 50;
+// The maximal number of photos we will load.
+static const NSUInteger kMaxNumberOfPohtos = 50;
 
 - (void)load {
-  dispatch_queue_t queue = dispatch_queue_create("LoadQueue", NULL);
+  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     NSArray<LTPhotoDescription *> *descriptions = [self backgroundLoad];
     [self notify:descriptions];
@@ -34,24 +35,24 @@ static const NSUInteger kMaxNumberOfPphtos = 50;
 }
 
 - (NSArray<LTPhotoDescription *> *)backgroundLoad {
-  NSMutableArray<LTPhotoDescription *> * descriptoins =
-    [[NSMutableArray<LTPhotoDescription *> alloc] init];
+  NSMutableArray<LTPhotoDescription *> *descriptions = [NSMutableArray array];
   if (!self.placeID) {
-    return descriptoins;
+    return descriptions;
   }
-  NSURL *photosURL = [FlickrFetcher URLforPhotosInPlace:self.placeID maxResults:kMaxNumberOfPphtos];
+  NSURL *photosURL = [FlickrFetcher URLforPhotosInPlace:self.placeID maxResults:kMaxNumberOfPohtos];
   NSData *photosData = [NSData dataWithContentsOfURL:photosURL];
   NSDictionary *photosDictionary = [NSJSONSerialization JSONObjectWithData:photosData
                                                                    options:0
                                                                      error:nil];
   NSArray *flickrData = [photosDictionary valueForKeyPath:FLICKR_RESULTS_PHOTOS];
   
-  for (NSUInteger ix = 0; ix < [flickrData count]; ix++) {
-    NSURL *url = [FlickrFetcher URLforPhoto:flickrData[ix] format:FlickrPhotoFormatOriginal];
-    if (!url)
+  for (NSDictionary *photo in flickrData) {
+    NSURL *url = [FlickrFetcher URLforPhoto:photo format:FlickrPhotoFormatOriginal];
+    if (!url) {
       continue;
-    NSString *originalTitle = [flickrData[ix] valueForKeyPath:FLICKR_PHOTO_TITLE];
-    NSString *originalText = [flickrData[ix] valueForKeyPath:FLICKR_PHOTO_DESCRIPTION];
+    }
+    NSString *originalTitle = [photo valueForKeyPath:FLICKR_PHOTO_TITLE];
+    NSString *originalText = [photo valueForKeyPath:FLICKR_PHOTO_DESCRIPTION];
     NSString *title = nil;
     NSString *text = nil;
 
@@ -67,15 +68,15 @@ static const NSUInteger kMaxNumberOfPphtos = 50;
       title = @"UNKNOWN";
       text = nil;
     }
-    [descriptoins addObject:[[LTPhotoDescription alloc] initWithTitle:title text:text andURL:url]];
+    [descriptions addObject:[[LTPhotoDescription alloc] initWithTitle:title text:text andURL:url]];
   }
-  return descriptoins;
+  return descriptions;
 }
 
 - (void)notify:(NSArray<LTPhotoDescription *> *)desscriptions {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self observingKey]
+  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
                                                       object:self
-                                                    userInfo:@{[self dataKey]:desscriptions}];
+                                                    userInfo:@{[self dataKey]: desscriptions}];
 }
 
 @end

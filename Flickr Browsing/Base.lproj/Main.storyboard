@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="a89-3X-dIP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="a89-3X-dIP">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -61,10 +61,10 @@
             </objects>
             <point key="canvasLocation" x="1551" y="1180"/>
         </scene>
-        <!--Descriptions Table-->
+        <!--Descriptions TableVC-->
         <scene sceneID="7LO-ha-Sav">
             <objects>
-                <tableViewController restorationIdentifier="City" id="9Kh-hA-gsa" customClass="LTDescriptionsTable" sceneMemberID="viewController">
+                <tableViewController restorationIdentifier="City" id="9Kh-hA-gsa" customClass="LTDescriptionsTableVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="8WK-Nv-tKU">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -114,10 +114,10 @@
             </objects>
             <point key="canvasLocation" x="2381" y="1175"/>
         </scene>
-        <!--Descriptions Table-->
+        <!--Descriptions TableVC-->
         <scene sceneID="br7-GU-5Xm">
             <objects>
-                <tableViewController restorationIdentifier="Recent" id="vMK-m7-kmF" customClass="LTDescriptionsTable" sceneMemberID="viewController">
+                <tableViewController restorationIdentifier="Recent" id="vMK-m7-kmF" customClass="LTDescriptionsTableVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="hCs-xj-TN3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -144,7 +144,7 @@
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="47b-yX-VIK">
                         <autoresizingMask key="autoresizingMask"/>
                         <connections>
-                            <action selector="refresh:" destination="vMK-m7-kmF" eventType="valueChanged" id="P25-p0-8WJ"/>
+                            <action selector="refresh:" destination="vMK-m7-kmF" eventType="valueChanged" id="MYX-Ik-WJR"/>
                         </connections>
                     </refreshControl>
                 </tableViewController>

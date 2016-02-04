@@ -11,28 +11,26 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// A simple struct that holds the data read from Flickr.
-/// This struct should be used in order to store the read data in data structure.
 @interface LTPlaceData : NSObject
 
-/// Init function with all parameters
+/// Initializes function with all parameters
 - (instancetype)initWithCountry:(NSString *)country
                        province:(NSString *)province
                            city:(NSString *)city
                      andPlaceID:(NSString *)placeID;
 
-/// The country in width the photo was taken place.
-@property (strong, nonatomic, nullable, readonly) NSString *country;
+/// The country in which the photo was taken.
+@property (strong, readonly, nonatomic, nullable) NSString *country;
 
-/// The province in width the photo was taken place.
-@property (strong, nonatomic, nullable, readonly) NSString *province;
+/// The province in which the photo was taken.
+@property (strong, readonly, nonatomic, nullable) NSString *province;
 
-/// The city in width the photo was taken place.
-@property (strong, nonatomic, nullable, readonly) NSString *city;
+/// The city in which the photo was taken.
+@property (strong, readonly, nonatomic, nullable) NSString *city;
 
-/// The place ID in width the photo was taken place.
-@property (strong, nonatomic, nullable, readonly) NSString *place_id;
+/// The place ID in which the photo was taken.
+@property (strong, readonly, nonatomic, nullable) NSString *place_id;
 
 @end
 
 NS_ASSUME_NONNULL_END
-

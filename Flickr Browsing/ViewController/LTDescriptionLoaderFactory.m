@@ -10,11 +10,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation LTDescriptionLoaderFactory
 
-+ (id<LTBackgroundLoaderProtocol>)allocateDescriptionLoader:(NSString *)name {
-  if ([name  isEqual: @"City"]) {
++ (nullable id<LTBackgroundLoaderProtocol>)allocateDescriptionLoaderForName:(NSString *)name {
+  if ([name isEqual: @"City"]) {
     return [[LTCityPhotosLoader alloc] init];
   }
-  else if ([name  isEqual: @"Recent"]) {
+  else if ([name isEqual: @"Recent"]) {
     return [[LTRecentPhotos alloc] init];
   }
   else {

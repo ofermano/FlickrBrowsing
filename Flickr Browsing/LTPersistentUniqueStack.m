@@ -11,19 +11,24 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPersistentUniqueStack()
-@property (strong, nonatomic, readonly) NSString *appSuit;
-@property (strong, nonatomic, readonly) NSString *key;
-@property (nonatomic, readonly) NSUInteger size;
+
+/// The application identifier.
+@property (strong, readonly, nonatomic) NSString *appSuit;
+
+/// The key to store the stack.
+@property (strong, readonly, nonatomic) NSString *key;
+
+/// The stack size.
+@property (readonly, nonatomic) NSUInteger size;
+
 @end
 
 @implementation LTPersistentUniqueStack
 
-
-- (instancetype) initAppSuit:(NSString *) appSuit andKey:(NSString *)key andSize:(NSUInteger)size;
-{
+- (instancetype) initAppSuit:(NSString *) appSuit andKey:(NSString *)key andSize:(NSUInteger)size {
   if (self = [super init]) {
-    _appSuit = appSuit;
-    _key = key;
+    _appSuit = [appSuit copy];
+    _key = [key copy];
     _size = size;
   }
   return self;
@@ -31,9 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)push:(id<NSCoding>)item {
   // The push item must be synchronized since while one thread updates the stack we don't want
-  // another thread will try to add a new item.
+  // another thread to try to add a new item.
   @synchronized(self) {
-    NSArray<id<NSCoding> >*stack = [self updateStack:item];
+    NSArray<id<NSCoding>> *stack = [self stackByMovingItemToHead:item];
     NSData *arrayData = [NSKeyedArchiver archivedDataWithRootObject:stack];
     NSUserDefaults *persistentMemory = [[NSUserDefaults standardUserDefaults]
                                         initWithSuiteName:self.appSuit];
@@ -41,9 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-- (NSArray<id<NSCoding>> *)updateStack:(id<NSCoding>)item {
-  NSArray<id<NSCoding> >*imutableStack = [self stack];
-  NSMutableArray<id<NSCoding> >*stack = [imutableStack mutableCopy];
+- (NSArray<id<NSCoding>> *)stackByMovingItemToHead:(id<NSCoding>)item {
+  NSArray<id<NSCoding>> *immutableStack = [self stack];
+  NSMutableArray<id<NSCoding>> *stack = [immutableStack mutableCopy];
   [stack removeObject:item];
   [stack insertObject:item atIndex:0];
   while ([stack count] > self.size) {
@@ -52,21 +57,14 @@ NS_ASSUME_NONNULL_BEGIN
   return stack;
 }
 
-- (NSArray<id<NSCoding> > *)stack {
+- (NSArray<id<NSCoding>> *)stack {
   NSUserDefaults *persistentMemory = [[NSUserDefaults standardUserDefaults]
                                       initWithSuiteName:self.appSuit];
   NSData *arrayData = [persistentMemory objectForKey:self.key];
-  NSArray<id<NSCoding> > *array = nil;
-  if (!arrayData) {
-    array = [[NSArray<id<NSCoding> > alloc]init];
-  }
-  else if ([arrayData isKindOfClass:[NSData class]]) {
-    array = [NSKeyedUnarchiver unarchiveObjectWithData:arrayData];
-  }
-  return array;
+  return ([arrayData isKindOfClass:NSData.class] ?
+          [NSKeyedUnarchiver unarchiveObjectWithData:arrayData] : @[]);
 }
 
 @end
 
 NS_ASSUME_NONNULL_END
-

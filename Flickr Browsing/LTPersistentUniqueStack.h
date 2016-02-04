@@ -10,17 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A class implementing a unique stack over NSUserDefaults persestent memory.
+/// A class implementing a unique stack over NSUserDefaults persistent memory.
 @interface LTPersistentUniqueStack : NSObject
 
 /// Init the memory with key and history size.
-- (instancetype) initAppSuit:(NSString *) appSuit andKey:(NSString *)key andSize:(NSUInteger)size;
+- (instancetype)initAppSuit:(NSString *) appSuit andKey:(NSString *)key andSize:(NSUInteger)size;
 
 /// Push an item to the head of the stack.
 - (void)push:(id<NSCoding>)item;
 
-/// Returns the stack currently in the persisten memory.
-- (NSArray<id<NSCoding> > *)stack;
+/// Returns the stack currently in the persistent memory.
+- (NSArray<id<NSCoding>> *)stack;
 
 @end
 

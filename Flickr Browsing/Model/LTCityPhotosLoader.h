@@ -6,10 +6,8 @@
 //  Copyright © 2015 Lightricks. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "LTPhotoDescription.h"
 #import "LTBackgroundLoaderProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,8 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// A class that loads the descriptions of the photos for a given city.
 @interface LTCityPhotosLoader : NSObject <LTBackgroundLoaderProtocol>
 
-/// A property to set the place id.
-@property (strong,nonatomic) NSString *placeID;
+/// The Flickr place ID we should load the images for.
+@property (strong, nonatomic, nullable) NSString *placeID;
 
 @end
 

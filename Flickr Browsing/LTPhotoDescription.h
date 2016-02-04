@@ -11,11 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// A struct that holds the data required to display an image.
-/// The structure implements the NSCoding protocol in order to be serialized.
 @interface LTPhotoDescription : NSObject <NSCoding>
 
 #pragma mark -
-#pragma mark Initializiers
+#pragma mark Initializers
 #pragma mark -
 
 /// Initialization with the data to allow immutability
@@ -28,15 +27,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /// The title of the photo.
-@property (strong, nonatomic, readonly) NSString *title;
+@property (strong, readonly, nonatomic, nullable) NSString *title;
 
 /// The description of the photo.
-@property (strong, nonatomic, readonly) NSString *text;
+@property (strong, readonly, nonatomic, nullable) NSString *text;
 
 /// The URL of the photo.
-@property (strong, nonatomic, readonly) NSURL *url;
+@property (strong, readonly, nonatomic, nullable) NSURL *url;
 
 @end
 
 NS_ASSUME_NONNULL_END
-

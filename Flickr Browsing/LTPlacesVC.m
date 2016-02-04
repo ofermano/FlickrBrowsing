@@ -1,5 +1,5 @@
 //
-//  PlacesVC.m
+//  LTPlacesVC.m
 //  Flickr Browsing
 //
 //  Created by Ofer Mano on 14/12/2015.
@@ -8,24 +8,28 @@
 
 #import "LTPlacesVC.h"
 
-#import "LTPlacesCollection.h"
 #import "LTCityPhotosLoader.h"
+#import "LTDescriptionsTableVC.h"
 #import "LTFlickrPlacesLoader.h"
+#import "LTPlacesCollection.h"
 #import "LTSplitViewDelegate.h"
-#import "LTDescriptionsTable.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LTPlacesVC()
 
 /// The places needs to be displayed
-@property (strong,nonatomic) LTPlacesCollection *places;
+@property (strong, nonatomic) LTPlacesCollection *places;
 
 /// The loader of the places.
 @property (strong, nonatomic) LTFlickrPlacesLoader *placesLoader;
 
 /// Deligation class for UISplitView
-@property (strong,nonatomic) LTSplitViewDelegate *splitViewDelegate;
+@property (strong, nonatomic) LTSplitViewDelegate *splitViewDelegate;
+
+/// A flag that indicates that places list is being refreshed and in this case we should not allow
+/// the user to select.
+@property (nonatomic) BOOL refreshing;
 
 @end
 
@@ -42,6 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  self.refreshing = YES;
   [self.placesLoader load];
 }
 
@@ -52,14 +57,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (LTFlickrPlacesLoader *)placesLoader {
   if (!_placesLoader) {
     _placesLoader = [[LTFlickrPlacesLoader alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(placesLoaded:) name:[_placesLoader observingKey] object:_placesLoader];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(placesLoaded:)
+                                                 name:[_placesLoader notificationName]
+                                               object:_placesLoader];
   }
   return _placesLoader;
 }
 
 - (LTSplitViewDelegate *)splitViewDelegate {
-  if (!_splitViewDelegate)
+  if (!_splitViewDelegate) {
     _splitViewDelegate = [[LTSplitViewDelegate alloc] init];
+  }
   return _splitViewDelegate;
 }
 
@@ -69,11 +78,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)placesLoaded:(NSNotification *)notification {
   self.places = [notification.userInfo valueForKey:[self.placesLoader dataKey]];
-  dispatch_async(dispatch_get_main_queue(), ^{ UITableView *tableView = (UITableView *)self.view; [tableView reloadData]; [self.refreshControl endRefreshing];});
+  dispatch_async(dispatch_get_main_queue(), ^{
+    UITableView *tableView = (UITableView *)self.view;
+    [tableView reloadData];
+    self.refreshing = NO;
+    [self.refreshControl endRefreshing];
+  });
 }
 
 #pragma mark -
-#pragma mark Deligation of table view
+#pragma mark Deligation of UITableViewDelegate
 #pragma mark -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)sender {
@@ -84,14 +98,15 @@ NS_ASSUME_NONNULL_BEGIN
   return [self.places getNumberOfCitiesInCountry:section];
 }
 
-- (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (nullable NSString *)tableView:(UITableView *)tableView
+         titleForHeaderInSection:(NSInteger)section {
   return [self.places getCountryByIndex:section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)sender
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell;
-  cell = [self.tableView dequeueReusableCellWithIdentifier:@"Place Cell" forIndexPath:indexPath];
+  UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Place Cell"
+                                                               forIndexPath:indexPath];
   NSString *country = [self.places getCountryByIndex:indexPath.section];
   cell.textLabel.text = [self.places getCityInCountry:country withIndex:indexPath.item];
   cell.detailTextLabel.text = [self.places getProvinceInCountry:country withIndex:indexPath.item];
@@ -102,6 +117,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Segue handling
 #pragma mark -
 
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
+                                  sender:(nullable id)sender {
+  return !self.refreshing;
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(nullable id)sender {
   if (![[segue identifier] isEqualToString:@"City Segue"]) {
     return;
@@ -109,8 +129,8 @@ NS_ASSUME_NONNULL_BEGIN
   NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
   NSString *country = [self.places getCountryByIndex:indexPath.section];
   
-  LTDescriptionsTable *cityPhotosVC = [segue destinationViewController];
-  LTCityPhotosLoader *loader = cityPhotosVC.desscriptionLoader;
+  LTDescriptionsTableVC *cityPhotosVC = [segue destinationViewController];
+  LTCityPhotosLoader *loader = cityPhotosVC.descriptionLoader;
   loader.placeID = [self.places getPlaceIDInCountry:country withIndex:indexPath.item];
 }
 
@@ -120,10 +140,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (IBAction)refresh:(UIRefreshControl *)sender {
   [self.refreshControl beginRefreshing];
+  self.refreshing = YES;
   [self.placesLoader load];
 }
 
 @end
 
 NS_ASSUME_NONNULL_END
-

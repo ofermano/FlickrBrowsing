@@ -10,15 +10,17 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation UISplitViewController (LTVirtualDetail)
 
 - (void)setVirtualDetail:(UIViewController<LTDetailViewProtocol> *)virtualDetail {
-  if (![[((id)self.delegate) class] conformsToProtocol:@protocol(LTVirtualDetailProtocol)])
+  if (![[((id)self.delegate) class] conformsToProtocol:@protocol(LTVirtualDetailProtocol)]) {
     return;
+  }
   id<LTVirtualDetailProtocol> virtualDetailHandler = (id<LTVirtualDetailProtocol>)self.delegate;
   virtualDetailHandler.virtualDetail = virtualDetail;
 }
 
 - (UIViewController<LTDetailViewProtocol> *)virtualDetail {
-  if (![[((id)self.delegate) class] conformsToProtocol:@protocol(LTVirtualDetailProtocol)])
+  if (![[((id)self.delegate) class] conformsToProtocol:@protocol(LTVirtualDetailProtocol)]) {
     return nil;
+  }
   id<LTVirtualDetailProtocol> virtualDetailHandler = (id<LTVirtualDetailProtocol>)self.delegate;
   return virtualDetailHandler.virtualDetail;
 }

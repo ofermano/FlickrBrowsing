@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LTImageLoader : NSObject <LTBackgroundLoaderProtocol>
 
 /// The URL to load the image from.
-@property (strong,nonatomic) NSURL *url;
+@property (strong, nonatomic) NSURL *url;
 
 @end
 

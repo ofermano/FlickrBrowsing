@@ -16,16 +16,17 @@ NS_ASSUME_NONNULL_BEGIN
                           text:(nullable NSString *)text
                         andURL:(nullable NSURL *)url {
   if (self = [super init]) {
-    _title = title;
-    _text = text;
+    _title = [title copy];
+    _text = [text copy];
     _url = url;
   }
   return self;
 }
 
 - (BOOL)isEqual:(id)object {
-  if (![object isKindOfClass:[LTPhotoDescription class]])
+  if (![object isKindOfClass:[LTPhotoDescription class]]) {
     return NO;
+  }
   LTPhotoDescription *that = (LTPhotoDescription *)object;
   return ([self.title isEqual:that.title] && [self.url isEqual:that.url]);
 }

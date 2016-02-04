@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C56445791C5A4468000C3F49 /* LTDescriptionsTable.m in Sources */ = {isa = PBXBuildFile; fileRef = C56445781C5A4468000C3F49 /* LTDescriptionsTable.m */; };
+		C56445791C5A4468000C3F49 /* LTDescriptionsTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C56445781C5A4468000C3F49 /* LTDescriptionsTableVC.m */; };
 		C573A8AB1C50BA5500261EDA /* LTSplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C573A8AA1C50BA5500261EDA /* LTSplitViewDelegate.m */; };
 		C573A8B21C50E59C00261EDA /* UISplitViewController+LTVirtualDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = C573A8B11C50E59C00261EDA /* UISplitViewController+LTVirtualDetail.m */; };
 		C573A8DB1C58B8D700261EDA /* LTImageLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = C573A8DA1C58B8D700261EDA /* LTImageLoader.m */; };
@@ -15,7 +15,6 @@
 		C58C27561C32CECA000D6A7B /* LTPersistentUniqueStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C58C27551C32CECA000D6A7B /* LTPersistentUniqueStack.m */; };
 		C5C7375F1C1EA67700E0229B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C7375E1C1EA67700E0229B /* main.m */; };
 		C5C737621C1EA67700E0229B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737611C1EA67700E0229B /* AppDelegate.m */; };
-		C5C737651C1EA67700E0229B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C737641C1EA67700E0229B /* ViewController.m */; };
 		C5C737681C1EA67700E0229B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5C737661C1EA67700E0229B /* Main.storyboard */; };
 		C5C7376A1C1EA67700E0229B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5C737691C1EA67700E0229B /* Assets.xcassets */; };
 		C5C7376D1C1EA67700E0229B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C5C7376B1C1EA67700E0229B /* LaunchScreen.storyboard */; };
@@ -51,8 +50,8 @@
 
 /* Begin PBXFileReference section */
 		C56445761C5A4023000C3F49 /* LTBackgroundLoaderProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LTBackgroundLoaderProtocol.h; path = Model/LTBackgroundLoaderProtocol.h; sourceTree = "<group>"; };
-		C56445771C5A4468000C3F49 /* LTDescriptionsTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LTDescriptionsTable.h; path = ViewController/LTDescriptionsTable.h; sourceTree = "<group>"; };
-		C56445781C5A4468000C3F49 /* LTDescriptionsTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LTDescriptionsTable.m; path = ViewController/LTDescriptionsTable.m; sourceTree = "<group>"; };
+		C56445771C5A4468000C3F49 /* LTDescriptionsTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LTDescriptionsTableVC.h; path = ViewController/LTDescriptionsTableVC.h; sourceTree = "<group>"; };
+		C56445781C5A4468000C3F49 /* LTDescriptionsTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LTDescriptionsTableVC.m; path = ViewController/LTDescriptionsTableVC.m; sourceTree = "<group>"; };
 		C573A8A91C50BA5500261EDA /* LTSplitViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LTSplitViewDelegate.h; path = ViewController/LTSplitViewDelegate.h; sourceTree = "<group>"; };
 		C573A8AA1C50BA5500261EDA /* LTSplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LTSplitViewDelegate.m; path = ViewController/LTSplitViewDelegate.m; sourceTree = "<group>"; };
 		C573A8AC1C50BDEC00261EDA /* LTDetailViewProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LTDetailViewProtocol.h; path = ViewController/LTDetailViewProtocol.h; sourceTree = "<group>"; };
@@ -69,8 +68,6 @@
 		C5C7375E1C1EA67700E0229B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C5C737601C1EA67700E0229B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C5C737611C1EA67700E0229B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		C5C737631C1EA67700E0229B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		C5C737641C1EA67700E0229B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C5C737671C1EA67700E0229B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C5C737691C1EA67700E0229B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5C7376C1C1EA67700E0229B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -154,8 +151,6 @@
 				C5C737931C1EB04600E0229B /* ViewController */,
 				C5C737601C1EA67700E0229B /* AppDelegate.h */,
 				C5C737611C1EA67700E0229B /* AppDelegate.m */,
-				C5C737631C1EA67700E0229B /* ViewController.h */,
-				C5C737641C1EA67700E0229B /* ViewController.m */,
 				C5C737661C1EA67700E0229B /* Main.storyboard */,
 				C5C737691C1EA67700E0229B /* Assets.xcassets */,
 				C5C7376B1C1EA67700E0229B /* LaunchScreen.storyboard */,
@@ -204,8 +199,8 @@
 				C5C737AF1C20078F00E0229B /* LTPhotoVC.m */,
 				C5ED29B01C5DEE150099ADB7 /* LTDescriptionLoaderFactory.h */,
 				C5ED29B11C5DEE150099ADB7 /* LTDescriptionLoaderFactory.m */,
-				C56445771C5A4468000C3F49 /* LTDescriptionsTable.h */,
-				C56445781C5A4468000C3F49 /* LTDescriptionsTable.m */,
+				C56445771C5A4468000C3F49 /* LTDescriptionsTableVC.h */,
+				C56445781C5A4468000C3F49 /* LTDescriptionsTableVC.m */,
 				C5C737A21C1EC20B00E0229B /* LTPlacesVC.h */,
 				C5C737A31C1EC20B00E0229B /* LTPlacesVC.m */,
 			);
@@ -372,12 +367,11 @@
 				C573A8B21C50E59C00261EDA /* UISplitViewController+LTVirtualDetail.m in Sources */,
 				C573A8DF1C58F77E00261EDA /* LTPlacesCollection.m in Sources */,
 				C5C737B01C20078F00E0229B /* LTPhotoVC.m in Sources */,
-				C5C737651C1EA67700E0229B /* ViewController.m in Sources */,
 				C5C737621C1EA67700E0229B /* AppDelegate.m in Sources */,
 				C5C7375F1C1EA67700E0229B /* main.m in Sources */,
 				C5C737AD1C1FF81E00E0229B /* LTFlickrPlacesLoader.m in Sources */,
 				C5C737BC1C214F8400E0229B /* LTRecentPhotos.m in Sources */,
-				C56445791C5A4468000C3F49 /* LTDescriptionsTable.m in Sources */,
+				C56445791C5A4468000C3F49 /* LTDescriptionsTableVC.m in Sources */,
 				C5ED29B21C5DEE150099ADB7 /* LTDescriptionLoaderFactory.m in Sources */,
 				C573A8DB1C58B8D700261EDA /* LTImageLoader.m in Sources */,
 				C5C737B61C205EDC00E0229B /* LTPhotoDescription.m in Sources */,
