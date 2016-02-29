@@ -52,8 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
     _descriptionLoader = [LTDescriptionLoaderFactory
                            allocateDescriptionLoaderForName:self.restorationIdentifier];
     if (_descriptionLoader) {
-      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(descriptionLoaded:)
-                                                   name:[_descriptionLoader notificationName]
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(descriptionLoaded:)
+                                                   name:_descriptionLoader.notificationName
                                                  object:_descriptionLoader];
     }
   }
@@ -62,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (LTRecentPhotos *)recentPhotos {
   if (!_recentPhotos) {
-    _recentPhotos = [[LTRecentPhotos alloc] init];
+    _recentPhotos = [[LTRecentPhotos alloc] initWithNotificationName:nil andDataKey:nil];
   }
   return _recentPhotos;
 }
@@ -72,8 +73,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 - (void)descriptionLoaded:(NSNotification *)notification {
-  self.descriptions = [notification.userInfo valueForKey:[self.descriptionLoader dataKey]];
   dispatch_async(dispatch_get_main_queue(), ^{
+    self.descriptions = [notification.userInfo valueForKey:[self.descriptionLoader dataKey]];
     UITableView *tableView = (UITableView *)self.view;
     [tableView reloadData];
     self.refreshing = NO;

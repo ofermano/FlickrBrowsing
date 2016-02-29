@@ -14,13 +14,35 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface LTFlickrPlacesLoader()
+
+/// The observing key.
+@property (strong, nonatomic) NSString *notificationName;
+
+/// The key to send the loaded data.
+@property (strong, nonatomic) NSString *dataKey;
+
+@end
+
 @implementation LTFlickrPlacesLoader
+
+- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
+                              andDataKey:(nullable NSString *)dataKey {
+  if (self = [super init]) {
+    _notificationName = notificationName;
+    _dataKey = dataKey;
+  }
+  return self;
+}
 
 #pragma mark -
 #pragma mark LTBackgroundLoaderProtocol
 #pragma mark -
 
 - (void)load {
+  if (!self.notificationName || !self.dataKey) {
+    return;
+  }
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     LTPlacesCollection *places = [self backgroundLoad];
@@ -28,17 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
   });
 }
 
-- (NSString *)notificationName {
-  return @"PlacesLoaded";
-}
-
-- (NSString *)dataKey {
-  return @"places";}
-
 - (void)notify:(LTPlacesCollection *)places {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
+  [[NSNotificationCenter defaultCenter] postNotificationName:self.notificationName
                                                       object:self
-                                                    userInfo:@{[self dataKey]:places}];
+                                                    userInfo:@{self.dataKey:places}];
 }
 
 #pragma mark -

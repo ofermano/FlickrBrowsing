@@ -13,20 +13,34 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface LTCityPhotosLoader()
+
+/// The observing key.
+@property (strong, nonatomic) NSString *notificationName;
+
+/// The key to send the loaded data.
+@property (strong, nonatomic) NSString *dataKey;
+
+@end
+
 @implementation LTCityPhotosLoader
 
-- (NSString *)notificationName {
-  return @"DescriptionsLoaded";
-}
-
-- (NSString *)dataKey {
-  return @"descriptions";
+- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
+                              andDataKey:(nullable NSString *)dataKey {
+  if (self = [super init]) {
+    _notificationName = notificationName;
+    _dataKey = dataKey;
+  }
+  return self;
 }
 
 // The maximal number of photos we will load.
 static const NSUInteger kMaxNumberOfPohtos = 50;
 
 - (void)load {
+  if (!self.notificationName || !self.dataKey) {
+    return;
+  }
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     NSArray<LTPhotoDescription *> *descriptions = [self backgroundLoad];
@@ -74,9 +88,9 @@ static const NSUInteger kMaxNumberOfPohtos = 50;
 }
 
 - (void)notify:(NSArray<LTPhotoDescription *> *)desscriptions {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
+  [[NSNotificationCenter defaultCenter] postNotificationName:self.notificationName
                                                       object:self
-                                                    userInfo:@{[self dataKey]: desscriptions}];
+                                                    userInfo:@{self.dataKey: desscriptions}];
 }
 
 @end

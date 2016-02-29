@@ -74,12 +74,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Setters and Getters
 #pragma mark -
 
+/// The key for recent photos loading notification.
+NSString *kImageNotificationKey = @"CityDescriptionsLoaded";
+
+/// The key for the loaded recent photos.
+NSString *kImageKey = @"descriptions";
+
 - (LTImageLoader *)imageLoader {
   if (!_imageLoader) {
-    _imageLoader = [[LTImageLoader alloc] init];
+    _imageLoader = [[LTImageLoader alloc] initWithNotificationName:kImageNotificationKey
+                                                        andDataKey:kImageKey];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoaded:)
-                                                 name:[_imageLoader notificationName]
+                                                 name:kImageNotificationKey
                                                object:_imageLoader];
   }
   return _imageLoader;
@@ -156,8 +163,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)imageLoaded:(NSNotification *)notification {
-  UIImage *image = [notification.userInfo valueForKey:[self.imageLoader dataKey]];
   dispatch_async(dispatch_get_main_queue(), ^{
+    UIImage *image = [notification.userInfo valueForKey:[self.imageLoader dataKey]];
     self.restoreData = image;
   });
 }

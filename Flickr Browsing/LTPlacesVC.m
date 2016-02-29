@@ -54,12 +54,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Setters and Getters
 #pragma mark -
 
+/// The key for the places loading notification.
+NSString *kPlacesNotificationKey = @"PlacesLoaded";
+
+/// The key for the loaded places.
+NSString *kPlacesKey = @"places";
+
 - (LTFlickrPlacesLoader *)placesLoader {
   if (!_placesLoader) {
-    _placesLoader = [[LTFlickrPlacesLoader alloc] init];
+    _placesLoader = [[LTFlickrPlacesLoader alloc] initWithNotificationName:kPlacesNotificationKey
+                                                                andDataKey:kPlacesKey];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(placesLoaded:)
-                                                 name:[_placesLoader notificationName]
+                                                 name:kPlacesNotificationKey
                                                object:_placesLoader];
   }
   return _placesLoader;
@@ -77,8 +84,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 - (void)placesLoaded:(NSNotification *)notification {
-  self.places = [notification.userInfo valueForKey:[self.placesLoader dataKey]];
   dispatch_async(dispatch_get_main_queue(), ^{
+    self.places = [notification.userInfo valueForKey:[self.placesLoader dataKey]];
     UITableView *tableView = (UITableView *)self.view;
     [tableView reloadData];
     self.refreshing = NO;
@@ -117,8 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Segue handling
 #pragma mark -
 
-- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
-                                  sender:(nullable id)sender {
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(nullable id)sender {
   return !self.refreshing;
 }
 

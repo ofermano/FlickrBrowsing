@@ -7,6 +7,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LTImageLoader()
 
+/// The observing key.
+@property (strong, nonatomic) NSString *notificationName;
+
+/// The key to send the loaded data.
+@property (strong, nonatomic) NSString *dataKey;
+
 /// Cache for last loaded images.
 @property (strong, nonatomic) NSCache *imageCache;
 
@@ -17,16 +23,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation LTImageLoader
 
+- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
+                              andDataKey:(nullable NSString *)dataKey {
+  if (self = [super init]) {
+    _notificationName = notificationName;
+    _dataKey = dataKey;
+  }
+  return self;
+}
+
 // The size of the cache we store.
 static const NSUInteger kCacheSize = 5;
 
-- (NSString *)notificationName {
-  return @"ImageLoaded";
-}
-
-- (NSString *)dataKey {
-  return @"image";
-}
 - (NSCache *)imageCache {
   if (!_imageCache) {
     _imageCache = [[NSCache alloc]init];
@@ -44,6 +52,9 @@ static const NSUInteger kCacheSize = 5;
 }
 
 - (void)load {
+  if (!self.notificationName || !self.dataKey) {
+    return;
+  }
   if ([self useCache:self.url]) {
     return;
   }
@@ -77,9 +88,9 @@ static const NSUInteger kCacheSize = 5;
 }
 
 - (void)notify:(UIImage *)image {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
+  [[NSNotificationCenter defaultCenter] postNotificationName:self.notificationName
                                                       object:self
-                                                    userInfo:@{[self dataKey]: image}];
+                                                    userInfo:@{self.dataKey: image}];
 }
 
 @end

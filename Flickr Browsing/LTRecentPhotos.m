@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotos()
 
+/// The observing key.
+@property (strong, nonatomic) NSString *notificationName;
+
+/// The key to send the loaded data.
+@property (strong, nonatomic) NSString *dataKey;
+
 /// The persistent memory we store the recent photos list.
 @property (strong, nonatomic) LTPersistentUniqueStack *persistentMemory;
 
@@ -32,8 +38,11 @@ static NSString* const kHistoryKey = @"history";
 #pragma mark Initializer
 #pragma mark -
 
-- (instancetype)init {
+- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
+                              andDataKey:(nullable NSString *)dataKey {
   if (self = [super init]) {
+    _notificationName = notificationName;
+    _dataKey = dataKey;
     _persistentMemory = [[LTPersistentUniqueStack alloc] initAppSuit:kAppSuit
                                                               andKey:kHistoryKey
                                                              andSize:kHistoryLength];
@@ -46,6 +55,9 @@ static NSString* const kHistoryKey = @"history";
 #pragma mark -
 
 - (void)load {
+  if (!self.notificationName || !self.dataKey) {
+    return;
+  }
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     NSArray<LTPhotoDescription *> *descriptions = [self getPhotos];
@@ -53,18 +65,10 @@ static NSString* const kHistoryKey = @"history";
   });
 }
 
-- (NSString *)notificationName {
-  return @"RecentDescriptionsLoaded";
-}
-
-- (NSString *)dataKey {
-  return @"descriptions";
-}
-
 - (void)notify:(NSArray<LTPhotoDescription *> *)descriptions {
-  [[NSNotificationCenter defaultCenter] postNotificationName:[self notificationName]
+  [[NSNotificationCenter defaultCenter] postNotificationName:self.notificationName
                                                       object:self
-                                                    userInfo:@{[self dataKey]:descriptions}];
+                                                    userInfo:@{self.dataKey:descriptions}];
 }
 
 - (NSArray<LTPhotoDescription *> *)getPhotos {

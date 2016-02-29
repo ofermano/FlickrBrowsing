@@ -8,15 +8,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// A protocol for background loading.
 @protocol LTBackgroundLoaderProtocol <NSObject>
 
-/// Getting the observing key.
-- (NSString *)notificationName;
-
-/// The key to get the loaded data.
-- (NSString *)dataKey;
+- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
+                              andDataKey:(nullable NSString *)dataKey;
 
 /// loading the data, a notification with the "notificationName" (see above) will be issued upon
 /// completion.
 - (void)load;
+
+/// The observing key.
+@property (strong, nonatomic, readonly) NSString *notificationName;
+
+/// The key to send the loaded data.
+@property (strong, nonatomic, readonly) NSString *dataKey;
 
 @end
 
