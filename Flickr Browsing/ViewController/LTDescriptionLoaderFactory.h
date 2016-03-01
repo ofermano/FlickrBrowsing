@@ -10,8 +10,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// A factory to create the different descriptions loaders.
 @interface LTDescriptionLoaderFactory : NSObject
 
-/// Creating the description loader given its name.
-+ (nullable id<LTBackgroundLoaderProtocol>)allocateDescriptionLoaderForName:(NSString *)name;
+/// Creates the description loader given its name.
++ (id<LTBackgroundLoaderProtocol>)descriptionLoaderForName:(NSString *)name;
 
 @end
 

@@ -55,18 +55,20 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /// The key for the places loading notification.
-NSString *kPlacesNotificationKey = @"PlacesLoaded";
+static const char kPlacesNotificationKey[] = "PlacesLoaded";
 
 /// The key for the loaded places.
-NSString *kPlacesKey = @"places";
+static const char kPlacesKey[] = "places";
 
 - (LTFlickrPlacesLoader *)placesLoader {
   if (!_placesLoader) {
-    _placesLoader = [[LTFlickrPlacesLoader alloc] initWithNotificationName:kPlacesNotificationKey
-                                                                andDataKey:kPlacesKey];
+    NSString *notificationName = [NSString stringWithUTF8String:kPlacesNotificationKey];
+    NSString *dataKey = [NSString stringWithUTF8String:kPlacesKey];
+    _placesLoader = [[LTFlickrPlacesLoader alloc] initWithNotificationName:notificationName
+                                                                andDataKey:dataKey];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(placesLoaded:)
-                                                 name:kPlacesNotificationKey
+                                                 name:notificationName
                                                object:_placesLoader];
   }
   return _placesLoader;
@@ -94,7 +96,7 @@ NSString *kPlacesKey = @"places";
 }
 
 #pragma mark -
-#pragma mark Deligation of UITableViewDelegate
+#pragma mark UITableViewDelegate
 #pragma mark -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)sender {

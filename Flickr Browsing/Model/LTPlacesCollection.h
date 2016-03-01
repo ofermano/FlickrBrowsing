@@ -7,12 +7,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A class of heirarchy of sorted country and cities.
+/// A collection of cities per country. Cities are sorted inside the countries and countries are
+/// also sorted.
 @interface LTPlacesCollection : NSObject
 
-/// A init function with the countries and dictionry pf cities
+/// A init function with the countries and dictionary of cities
 - (instancetype)initWithCountries:(NSArray<NSString *> *)countries
-                        andPlaces:(NSDictionary<NSString *,NSArray *> *)placesByCountry;
+                        andPlaces:(NSDictionary<NSString *, NSArray *> *)placesByCountry;
 
 /// Returns the number of countries.
 - (NSInteger)getNumberOfCountries;

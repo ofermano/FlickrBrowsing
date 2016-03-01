@@ -20,7 +20,10 @@ static const int kHistoryLength = 20;
 /// A class that loads and sets the recent photos.
 @interface LTRecentPhotos : NSObject <LTBackgroundLoaderProtocol>
 
-/// Adds a photo descrption as the most recent photo.
+/// Initialises for storing images only.
+- (instancetype)init;
+
+/// Adds a photo description as the most recent photo.
 - (void)push:(LTPhotoDescription *)photoDescription;
 
 @end

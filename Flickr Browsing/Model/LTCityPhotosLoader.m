@@ -15,18 +15,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LTCityPhotosLoader()
 
-/// The observing key.
-@property (strong, nonatomic) NSString *notificationName;
-
-/// The key to send the loaded data.
-@property (strong, nonatomic) NSString *dataKey;
+@property (strong, nonatomic, nullable) NSString *placeIDSnapshot;
 
 @end
 
 @implementation LTCityPhotosLoader
 
-- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
-                              andDataKey:(nullable NSString *)dataKey {
+@synthesize notificationName = _notificationName;
+
+@synthesize dataKey = _dataKey;
+
+- (instancetype)initWithNotificationName:(NSString *)notificationName
+                              andDataKey:(NSString *)dataKey {
   if (self = [super init]) {
     _notificationName = notificationName;
     _dataKey = dataKey;
@@ -38,9 +38,10 @@ NS_ASSUME_NONNULL_BEGIN
 static const NSUInteger kMaxNumberOfPohtos = 50;
 
 - (void)load {
-  if (!self.notificationName || !self.dataKey) {
+  if (!self.placeID) {
     return;
   }
+  self.placeIDSnapshot = self.placeID;
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     NSArray<LTPhotoDescription *> *descriptions = [self backgroundLoad];
@@ -50,10 +51,8 @@ static const NSUInteger kMaxNumberOfPohtos = 50;
 
 - (NSArray<LTPhotoDescription *> *)backgroundLoad {
   NSMutableArray<LTPhotoDescription *> *descriptions = [NSMutableArray array];
-  if (!self.placeID) {
-    return descriptions;
-  }
-  NSURL *photosURL = [FlickrFetcher URLforPhotosInPlace:self.placeID maxResults:kMaxNumberOfPohtos];
+  NSURL *photosURL = [FlickrFetcher URLforPhotosInPlace:self.placeIDSnapshot
+                                             maxResults:kMaxNumberOfPohtos];
   NSData *photosData = [NSData dataWithContentsOfURL:photosURL];
   NSDictionary *photosDictionary = [NSJSONSerialization JSONObjectWithData:photosData
                                                                    options:0
@@ -87,10 +86,14 @@ static const NSUInteger kMaxNumberOfPohtos = 50;
   return descriptions;
 }
 
-- (void)notify:(NSArray<LTPhotoDescription *> *)desscriptions {
+- (void)notify:(NSArray<LTPhotoDescription *> *)descriptions {
+  if (![self.placeID isEqualToString:self.placeIDSnapshot]) {
+    [self load];
+    return;
+  }
   [[NSNotificationCenter defaultCenter] postNotificationName:self.notificationName
                                                       object:self
-                                                    userInfo:@{self.dataKey: desscriptions}];
+                                                    userInfo:@{self.dataKey: descriptions}];
 }
 
 @end

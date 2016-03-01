@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A spinner that indicates loading is in progress.
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+
 @end
 
 @implementation LTPhotoVC
@@ -75,18 +76,21 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /// The key for recent photos loading notification.
-NSString *kImageNotificationKey = @"CityDescriptionsLoaded";
+static const char kImageNotificationKey[] = "CityDescriptionsLoaded";
 
 /// The key for the loaded recent photos.
-NSString *kImageKey = @"descriptions";
+static const char kImageKey[] = "descriptions";
 
 - (LTImageLoader *)imageLoader {
   if (!_imageLoader) {
-    _imageLoader = [[LTImageLoader alloc] initWithNotificationName:kImageNotificationKey
-                                                        andDataKey:kImageKey];
+    NSString *notificationName = [NSString stringWithUTF8String:kImageNotificationKey];
+    NSString *dataKey = [NSString stringWithUTF8String:kImageKey];
+
+    _imageLoader = [[LTImageLoader alloc] initWithNotificationName:notificationName
+                                                        andDataKey:dataKey];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoaded:)
-                                                 name:kImageNotificationKey
+                                                 name:notificationName
                                                object:_imageLoader];
   }
   return _imageLoader;
@@ -128,8 +132,9 @@ NSString *kImageKey = @"descriptions";
                   animations:^{
                     self.imageView.frame = imageViewRect;
                   }
-                  completion:^(BOOL fin) {
-                    [self resetScrollViewSize:imageViewScale];[self.spinner stopAnimating];
+                  completion:^(__unused BOOL fin) {
+                    [self resetScrollViewSize:imageViewScale];
+                    [self.spinner stopAnimating];
                   }];
 }
 

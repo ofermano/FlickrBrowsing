@@ -11,24 +11,30 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation LTDescriptionLoaderFactory
 
 /// The key for recent photos loading notification.
-NSString *kRecentPhotosNotificationKey = @"RecentDescriptionsLoaded";
+static const char kRecentPhotosNotificationKey[] = "RecentDescriptionsLoaded";
 
 /// The key for recent photos loading notification.
-NSString *kCityPhotosNotificationKey = @"CityDescriptionsLoaded";
+static const char kCityPhotosNotificationKey[] = "CityDescriptionsLoaded";
 
 /// The key for the loaded recent photos.
-NSString *kDescriptionsKey = @"descriptions";
+static const char kDescriptionsKey[] = "descriptions";
 
-+ (nullable id<LTBackgroundLoaderProtocol>)allocateDescriptionLoaderForName:(NSString *)name {
++ (id<LTBackgroundLoaderProtocol>)descriptionLoaderForName:(NSString *)name {
   if ([name isEqual: @"City"]) {
-    return [[LTCityPhotosLoader alloc] initWithNotificationName:kCityPhotosNotificationKey
-                                                     andDataKey:kDescriptionsKey];
+    NSString *notificationName = [NSString stringWithUTF8String:kCityPhotosNotificationKey];
+    NSString *dataKey = [NSString stringWithUTF8String:kDescriptionsKey];
+
+    return [[LTCityPhotosLoader alloc] initWithNotificationName:notificationName
+                                                     andDataKey:dataKey];
   }
   else if ([name isEqual: @"Recent"]) {
-    return [[LTRecentPhotos alloc] initWithNotificationName:kRecentPhotosNotificationKey
-                                                 andDataKey:kDescriptionsKey];
+    NSString *notificationName = [NSString stringWithUTF8String:kRecentPhotosNotificationKey];
+    NSString *dataKey = [NSString stringWithUTF8String:kDescriptionsKey];
+    return [[LTRecentPhotos alloc] initWithNotificationName:notificationName
+                                                 andDataKey:dataKey];
   }
   else {
+    NSAssert(NO, @"Illeagal token %@", name);
     return nil;
   }
 }

@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Initializers
 #pragma mark -
 
-/// Initialization with the data to allow immutability
+/// Initializes with the data to allow immutability.
 - (instancetype)initWithTitle:(nullable NSString *)title
                          text:(nullable NSString *)text
                        andURL:(nullable NSURL *)url;

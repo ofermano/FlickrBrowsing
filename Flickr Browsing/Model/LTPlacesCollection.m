@@ -10,10 +10,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LTPlacesCollection()
 
 /// A sorted array of the countries.
-@property (strong, readonly, nonatomic) NSArray *countries;
+@property (readonly, nonatomic) NSArray *countries;
 
-// A dictionary with for each country and array of cities.
-@property (strong, readonly, nonatomic) NSDictionary *placesByCountry;
+// A dictionary that holds for each country its array of cities.
+@property (readonly, nonatomic) NSDictionary *placesByCountry;
 
 @end
 
@@ -51,7 +51,6 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (nullable NSString *)getPlaceIDInCountry:(NSString *)country withIndex:(NSInteger)cityIndex {
-  NSArray *array = [self.placesByCountry objectForKey:country];
   LTPlaceData *place = [self.placesByCountry objectForKey:country][cityIndex];
   return place.place_id;
 }

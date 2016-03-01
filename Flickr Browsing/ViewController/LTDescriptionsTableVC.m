@@ -9,7 +9,6 @@
 #import "LTDescriptionsTableVC.h"
 
 #import "UISplitViewController+LTVirtualDetail.h"
-
 #import "LTDescriptionLoaderFactory.h"
 #import "LTPhotoDescription.h"
 #import "LTPhotoVC.h"
@@ -50,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id<LTBackgroundLoaderProtocol>)descriptionLoader {
   if (!_descriptionLoader) {
     _descriptionLoader = [LTDescriptionLoaderFactory
-                           allocateDescriptionLoaderForName:self.restorationIdentifier];
+                          descriptionLoaderForName:self.restorationIdentifier];
     if (_descriptionLoader) {
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(descriptionLoaded:)
@@ -63,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (LTRecentPhotos *)recentPhotos {
   if (!_recentPhotos) {
-    _recentPhotos = [[LTRecentPhotos alloc] initWithNotificationName:nil andDataKey:nil];
+    _recentPhotos = [[LTRecentPhotos alloc] init];
   }
   return _recentPhotos;
 }

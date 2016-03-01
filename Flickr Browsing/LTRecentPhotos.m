@@ -15,12 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LTRecentPhotos()
 
-/// The observing key.
-@property (strong, nonatomic) NSString *notificationName;
-
-/// The key to send the loaded data.
-@property (strong, nonatomic) NSString *dataKey;
-
 /// The persistent memory we store the recent photos list.
 @property (strong, nonatomic) LTPersistentUniqueStack *persistentMemory;
 
@@ -28,23 +22,42 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation LTRecentPhotos
 
+@synthesize notificationName = _notificationName;
+
+@synthesize dataKey = _dataKey;
+
 // The application key in the persistent memory.
-static NSString* const kAppSuit = @"Flickr Browsing";
+static const char kAppSuit[] = "Flickr Browsing";
 
 // The recent photos key in the persistent memory.
-static NSString* const kHistoryKey = @"history";
+static const char kHistoryKey[] = "history";
 
 #pragma mark -
 #pragma mark Initializer
 #pragma mark -
 
-- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
-                              andDataKey:(nullable NSString *)dataKey {
+- (instancetype)initWithNotificationName:(NSString *)notificationName
+                              andDataKey:(NSString *)dataKey {
   if (self = [super init]) {
     _notificationName = notificationName;
     _dataKey = dataKey;
-    _persistentMemory = [[LTPersistentUniqueStack alloc] initAppSuit:kAppSuit
-                                                              andKey:kHistoryKey
+    NSString *appSuit = [NSString stringWithUTF8String:kAppSuit];
+    NSString *historyKey = [NSString stringWithUTF8String:kHistoryKey];
+
+    _persistentMemory = [[LTPersistentUniqueStack alloc] initAppSuit:appSuit
+                                                              andKey:historyKey
+                                                             andSize:kHistoryLength];
+  }
+  return self;
+}
+
+- (instancetype)init {
+  if (self = [super init]) {
+    NSString *appSuit = [NSString stringWithUTF8String:kAppSuit];
+    NSString *historyKey = [NSString stringWithUTF8String:kHistoryKey];
+    
+    _persistentMemory = [[LTPersistentUniqueStack alloc] initAppSuit:appSuit
+                                                              andKey:historyKey
                                                              andSize:kHistoryLength];
   }
   return self;
@@ -55,9 +68,6 @@ static NSString* const kHistoryKey = @"history";
 #pragma mark -
 
 - (void)load {
-  if (!self.notificationName || !self.dataKey) {
-    return;
-  }
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
   dispatch_async(queue, ^{
     NSArray<LTPhotoDescription *> *descriptions = [self getPhotos];
@@ -68,7 +78,7 @@ static NSString* const kHistoryKey = @"history";
 - (void)notify:(NSArray<LTPhotoDescription *> *)descriptions {
   [[NSNotificationCenter defaultCenter] postNotificationName:self.notificationName
                                                       object:self
-                                                    userInfo:@{self.dataKey:descriptions}];
+                                                    userInfo:@{self.dataKey: descriptions}];
 }
 
 - (NSArray<LTPhotoDescription *> *)getPhotos {

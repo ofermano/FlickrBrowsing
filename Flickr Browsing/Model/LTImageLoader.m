@@ -7,12 +7,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LTImageLoader()
 
-/// The observing key.
-@property (strong, nonatomic) NSString *notificationName;
-
-/// The key to send the loaded data.
-@property (strong, nonatomic) NSString *dataKey;
-
 /// Cache for last loaded images.
 @property (strong, nonatomic) NSCache *imageCache;
 
@@ -23,8 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation LTImageLoader
 
-- (instancetype)initWithNotificationName:(nullable NSString *)notificationName
-                              andDataKey:(nullable NSString *)dataKey {
+@synthesize notificationName = _notificationName;
+
+@synthesize dataKey = _dataKey;
+
+- (instancetype)initWithNotificationName:(NSString *)notificationName
+                              andDataKey:(NSString *)dataKey {
   if (self = [super init]) {
     _notificationName = notificationName;
     _dataKey = dataKey;
@@ -52,9 +50,6 @@ static const NSUInteger kCacheSize = 5;
 }
 
 - (void)load {
-  if (!self.notificationName || !self.dataKey) {
-    return;
-  }
   if ([self useCache:self.url]) {
     return;
   }
@@ -73,7 +68,7 @@ static const NSUInteger kCacheSize = 5;
 - (void)backgroundLoading:(NSURL *)url {
   NSURLRequest *request = [NSURLRequest requestWithURL:url];
   NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request
-    completionHandler:^(NSURL *file, NSURLResponse *response, NSError *error) {
+      completionHandler:^(NSURL *file, NSURLResponse *response, NSError *error) {
       if (error) {
         return;
       }
